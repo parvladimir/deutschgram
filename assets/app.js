@@ -94,7 +94,7 @@ function formatTime(dateString) {
 }
 
 function relativePresence(user) {
-    return user.is_online ? 'в сети' : 'не в сети';
+    return user.is_online ? 'Р Р† РЎРѓР ВµРЎвЂљР С‘' : 'Р Р…Р Вµ Р Р† РЎРѓР ВµРЎвЂљР С‘';
 }
 
 function findConversationById(conversationId) {
@@ -116,11 +116,11 @@ function renderCurrentUser() {
     dom.loginForm.classList.add('hidden');
     dom.currentUserCard.classList.remove('hidden');
     dom.currentUserCard.innerHTML = `
-        <div class="eyebrow">ваш профиль</div>
+        <div class="eyebrow">Р Р†Р В°РЎв‚¬ Р С—РЎР‚Р С•РЎвЂћР С‘Р В»РЎРЉ</div>
         <div class="profile-name">${escapeHtml(state.currentUser.display_name)}</div>
         <div class="profile-row">
             <span>@${escapeHtml(state.currentUser.username)}</span>
-            <span>${state.currentUser.is_online ? 'в сети' : 'пауза'}</span>
+            <span>${state.currentUser.is_online ? 'Р Р† РЎРѓР ВµРЎвЂљР С‘' : 'Р С—Р В°РЎС“Р В·Р В°'}</span>
         </div>
     `;
 }
@@ -128,13 +128,13 @@ function renderCurrentUser() {
 function renderUsers() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Сначала войдите в приложение.';
+        dom.usersList.textContent = 'Р РЋР Р…Р В°РЎвЂЎР В°Р В»Р В° Р Р†Р С•Р в„–Р Т‘Р С‘РЎвЂљР Вµ Р Р† Р С—РЎР‚Р С‘Р В»Р С•Р В¶Р ВµР Р…Р С‘Р Вµ.';
         return;
     }
 
     if (state.users.length === 0) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Другие пользователи появятся здесь, когда откроют сайт.';
+        dom.usersList.textContent = 'Р вЂќРЎР‚РЎС“Р С–Р С‘Р Вµ Р С—Р С•Р В»РЎРЉР В·Р С•Р Р†Р В°РЎвЂљР ВµР В»Р С‘ Р С—Р С•РЎРЏР Р†РЎРЏРЎвЂљРЎРѓРЎРЏ Р В·Р Т‘Р ВµРЎРѓРЎРЉ, Р С”Р С•Р С–Р Т‘Р В° Р С•РЎвЂљР С”РЎР‚Р С•РЎР‹РЎвЂљ РЎРѓР В°Р в„–РЎвЂљ.';
         return;
     }
 
@@ -160,13 +160,13 @@ function renderUsers() {
 function renderConversations() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'После входа здесь появятся чаты.';
+        dom.conversationsList.textContent = 'Р СџР С•РЎРѓР В»Р Вµ Р Р†РЎвЂ¦Р С•Р Т‘Р В° Р В·Р Т‘Р ВµРЎРѓРЎРЉ Р С—Р С•РЎРЏР Р†РЎРЏРЎвЂљРЎРѓРЎРЏ РЎвЂЎР В°РЎвЂљРЎвЂ№.';
         return;
     }
 
     if (state.conversations.length === 0) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'Откройте диалог через список людей.';
+        dom.conversationsList.textContent = 'Р С›РЎвЂљР С”РЎР‚Р С•Р в„–РЎвЂљР Вµ Р Т‘Р С‘Р В°Р В»Р С•Р С– РЎвЂЎР ВµРЎР‚Р ВµР В· РЎРѓР С—Р С‘РЎРѓР С•Р С” Р В»РЎР‹Р Т‘Р ВµР в„–.';
         return;
     }
 
@@ -180,7 +180,7 @@ function renderConversations() {
         button.className = `conversation-item${isActive ? ' active' : ''}`;
         const preview = conversation.last_message
             ? escapeHtml(conversation.last_message.body.slice(0, 58))
-            : 'Новый диалог без сообщений';
+            : 'Р СњР С•Р Р†РЎвЂ№Р в„– Р Т‘Р С‘Р В°Р В»Р С•Р С– Р В±Р ВµР В· РЎРѓР С•Р С•Р В±РЎвЂ°Р ВµР Р…Р С‘Р в„–';
         button.innerHTML = `
             <span class="conversation-main">
                 <span class="conversation-name">${escapeHtml(conversation.peer.display_name)}</span>
@@ -202,27 +202,27 @@ function renderChatHeader() {
     dom.sendMessageButton.disabled = !canInteract;
 
     if (!activeConversation) {
-        dom.chatHeader.querySelector('h2').textContent = 'Сообщения';
-        dom.chatHeader.querySelector('.eyebrow').textContent = 'выберите диалог';
+        dom.chatHeader.querySelector('h2').textContent = 'Р РЋР С•Р С•Р В±РЎвЂ°Р ВµР Р…Р С‘РЎРЏ';
+        dom.chatHeader.querySelector('.eyebrow').textContent = 'Р Р†РЎвЂ№Р В±Р ВµРЎР‚Р С‘РЎвЂљР Вµ Р Т‘Р С‘Р В°Р В»Р С•Р С–';
         return;
     }
 
     dom.chatHeader.querySelector('h2').textContent = activeConversation.peer.display_name;
     dom.chatHeader.querySelector('.eyebrow').textContent = activeConversation.peer.is_online
-        ? 'собеседник сейчас в сети'
-        : 'собеседник сейчас офлайн';
+        ? 'РЎРѓР С•Р В±Р ВµРЎРѓР ВµР Т‘Р Р…Р С‘Р С” РЎРѓР ВµР в„–РЎвЂЎР В°РЎРѓ Р Р† РЎРѓР ВµРЎвЂљР С‘'
+        : 'РЎРѓР С•Р В±Р ВµРЎРѓР ВµР Т‘Р Р…Р С‘Р С” РЎРѓР ВµР в„–РЎвЂЎР В°РЎРѓ Р С•РЎвЂћР В»Р В°Р в„–Р Р…';
 }
 
 function renderMessages() {
     if (!state.activeConversation) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Выберите человека слева, чтобы открыть чат и позвонить.';
+        dom.messagesPanel.textContent = 'Р вЂ™РЎвЂ№Р В±Р ВµРЎР‚Р С‘РЎвЂљР Вµ РЎвЂЎР ВµР В»Р С•Р Р†Р ВµР С”Р В° РЎРѓР В»Р ВµР Р†Р В°, РЎвЂЎРЎвЂљР С•Р В±РЎвЂ№ Р С•РЎвЂљР С”РЎР‚РЎвЂ№РЎвЂљРЎРЉ РЎвЂЎР В°РЎвЂљ Р С‘ Р С—Р С•Р В·Р Р†Р С•Р Р…Р С‘РЎвЂљРЎРЉ.';
         return;
     }
 
     if (state.messages.length === 0) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Сообщений пока нет. Начните разговор первым.';
+        dom.messagesPanel.textContent = 'Р РЋР С•Р С•Р В±РЎвЂ°Р ВµР Р…Р С‘Р в„– Р С—Р С•Р С”Р В° Р Р…Р ВµРЎвЂљ. Р СњР В°РЎвЂЎР Р…Р С‘РЎвЂљР Вµ РЎР‚Р В°Р В·Р С–Р С•Р Р†Р С•РЎР‚ Р С—Р ВµРЎР‚Р Р†РЎвЂ№Р С.';
         return;
     }
 
@@ -238,7 +238,7 @@ function renderMessages() {
         const meta = fragment.querySelector('.message-meta');
         const body = fragment.querySelector('.message-body');
         bubble.classList.toggle('own', message.is_from_current_user);
-        meta.textContent = `${message.sender_display_name} • ${formatTime(message.created_at)}`;
+        meta.textContent = `${message.sender_display_name} РІР‚Сћ ${formatTime(message.created_at)}`;
         body.textContent = message.body;
         dom.messagesPanel.appendChild(fragment);
     });
@@ -249,26 +249,26 @@ function renderMessages() {
 }
 
 function renderCallPanel() {
-    const peerName = state.activeConversation?.peer.display_name || 'Собеседник';
+    const peerName = state.activeConversation?.peer.display_name || 'Р РЋР С•Р В±Р ВµРЎРѓР ВµР Т‘Р Р…Р С‘Р С”';
 
     const labelMap = {
-        idle: 'Звонок ещё не начат.',
-        calling: `Звоним ${peerName}...`,
-        ringing: `${peerName} звонит вам.`,
-        connecting: `Соединяемся с ${peerName}...`,
-        in_call_audio: `Идёт аудиозвонок с ${peerName}.`,
-        in_call_video: `Идёт видеозвонок с ${peerName}.`,
-        ended: 'Звонок завершён.',
-        failed: 'Не удалось подключить звонок.',
+        idle: 'Р вЂ”Р Р†Р С•Р Р…Р С•Р С” Р ВµРЎвЂ°РЎвЂ Р Р…Р Вµ Р Р…Р В°РЎвЂЎР В°РЎвЂљ.',
+        calling: `Р вЂ”Р Р†Р С•Р Р…Р С‘Р С ${peerName}...`,
+        ringing: `${peerName} Р В·Р Р†Р С•Р Р…Р С‘РЎвЂљ Р Р†Р В°Р С.`,
+        connecting: `Р РЋР С•Р ВµР Т‘Р С‘Р Р…РЎРЏР ВµР СРЎРѓРЎРЏ РЎРѓ ${peerName}...`,
+        in_call_audio: `Р ВР Т‘РЎвЂРЎвЂљ Р В°РЎС“Р Т‘Р С‘Р С•Р В·Р Р†Р С•Р Р…Р С•Р С” РЎРѓ ${peerName}.`,
+        in_call_video: `Р ВР Т‘РЎвЂРЎвЂљ Р Р†Р С‘Р Т‘Р ВµР С•Р В·Р Р†Р С•Р Р…Р С•Р С” РЎРѓ ${peerName}.`,
+        ended: 'Р вЂ”Р Р†Р С•Р Р…Р С•Р С” Р В·Р В°Р Р†Р ВµРЎР‚РЎв‚¬РЎвЂР Р….',
+        failed: 'Р СњР Вµ РЎС“Р Т‘Р В°Р В»Р С•РЎРѓРЎРЉ Р С—Р С•Р Т‘Р С”Р В»РЎР‹РЎвЂЎР С‘РЎвЂљРЎРЉ Р В·Р Р†Р С•Р Р…Р С•Р С”.',
     };
 
-    dom.callStateText.textContent = labelMap[state.callState] || 'Звонок ещё не начат.';
+    dom.callStateText.textContent = labelMap[state.callState] || 'Р вЂ”Р Р†Р С•Р Р…Р С•Р С” Р ВµРЎвЂ°РЎвЂ Р Р…Р Вµ Р Р…Р В°РЎвЂЎР В°РЎвЂљ.';
     const inCall = ['calling', 'connecting', 'in_call_audio', 'in_call_video', 'ringing'].includes(state.callState);
     dom.hangupButton.disabled = !inCall;
     dom.muteButton.disabled = !state.localStream;
     dom.cameraButton.disabled = !state.localStream || state.currentCall?.mode !== 'video';
-    dom.muteButton.textContent = state.isMuted ? 'Включить микрофон' : 'Микрофон';
-    dom.cameraButton.textContent = state.isCameraEnabled ? 'Камера' : 'Включить камеру';
+    dom.muteButton.textContent = state.isMuted ? 'Р вЂ™Р С”Р В»РЎР‹РЎвЂЎР С‘РЎвЂљРЎРЉ Р СР С‘Р С”РЎР‚Р С•РЎвЂћР С•Р Р…' : 'Р СљР С‘Р С”РЎР‚Р С•РЎвЂћР С•Р Р…';
+    dom.cameraButton.textContent = state.isCameraEnabled ? 'Р С™Р В°Р СР ВµРЎР‚Р В°' : 'Р вЂ™Р С”Р В»РЎР‹РЎвЂЎР С‘РЎвЂљРЎРЉ Р С”Р В°Р СР ВµРЎР‚РЎС“';
 }
 
 function renderIncomingCall() {
@@ -278,9 +278,9 @@ function renderIncomingCall() {
     }
 
     dom.incomingCallModal.classList.remove('hidden');
-    const modeText = state.incomingOffer.payload.mode === 'video' ? 'видеозвонок' : 'аудиозвонок';
-    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} звонит`;
-    dom.incomingCallText.textContent = `Входящий ${modeText}. Принять?`;
+    const modeText = state.incomingOffer.payload.mode === 'video' ? 'Р Р†Р С‘Р Т‘Р ВµР С•Р В·Р Р†Р С•Р Р…Р С•Р С”' : 'Р В°РЎС“Р Т‘Р С‘Р С•Р В·Р Р†Р С•Р Р…Р С•Р С”';
+    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} Р В·Р Р†Р С•Р Р…Р С‘РЎвЂљ`;
+    dom.incomingCallText.textContent = `Р вЂ™РЎвЂ¦Р С•Р Т‘РЎРЏРЎвЂ°Р С‘Р в„– ${modeText}. Р СџРЎР‚Р С‘Р Р…РЎРЏРЎвЂљРЎРЉ?`;
 }
 
 function render() {
@@ -394,7 +394,7 @@ async function registerUser(event) {
         localStorage.setItem(STORAGE_KEY, String(result.user.id));
         state.messages = [];
         state.lastMessageId = 0;
-        setAuthHint('Профиль сохранён. Можно открывать диалог.');
+        setAuthHint('Р СџРЎР‚Р С•РЎвЂћР С‘Р В»РЎРЉ РЎРѓР С•РЎвЂ¦РЎР‚Р В°Р Р…РЎвЂР Р…. Р СљР С•Р В¶Р Р…Р С• Р С•РЎвЂљР С”РЎР‚РЎвЂ№Р Р†Р В°РЎвЂљРЎРЉ Р Т‘Р С‘Р В°Р В»Р С•Р С–.');
         render();
         startSyncLoop();
     } catch (error) {
@@ -607,8 +607,7 @@ async function createPeerConnection(call) {
         }
 
         if (['disconnected', 'failed', 'closed'].includes(status)) {
-            state.callState = status === 'failed' ? 'failed' : 'ended';
-            cleanupCall(false);
+            cleanupCall(false, status === 'failed' ? 'failed' : 'ended');
         }
     };
 
@@ -668,10 +667,8 @@ async function startCall(mode) {
             },
         });
     } catch (error) {
-        cleanupCall(false);
-        state.callState = 'failed';
-        render();
-        setAuthHint(`Не удалось начать звонок: ${error.message}`, true);
+        cleanupCall(false, 'failed');
+        setAuthHint(`Р СњР Вµ РЎС“Р Т‘Р В°Р В»Р С•РЎРѓРЎРЉ Р Р…Р В°РЎвЂЎР В°РЎвЂљРЎРЉ Р В·Р Р†Р С•Р Р…Р С•Р С”: ${error.message}`, true);
     }
 }
 
@@ -725,10 +722,8 @@ async function acceptIncomingCall() {
             },
         });
     } catch (error) {
-        cleanupCall(false);
-        state.callState = 'failed';
-        render();
-        setAuthHint(`Не удалось принять звонок: ${error.message}`, true);
+        cleanupCall(false, 'failed');
+        setAuthHint(`Р СњР Вµ РЎС“Р Т‘Р В°Р В»Р С•РЎРѓРЎРЉ Р С—РЎР‚Р С‘Р Р…РЎРЏРЎвЂљРЎРЉ Р В·Р Р†Р С•Р Р…Р С•Р С”: ${error.message}`, true);
     }
 }
 
@@ -804,9 +799,8 @@ async function processSignals(signals) {
         }
 
         if (signal.type === 'call-decline' || signal.type === 'call-busy' || signal.type === 'call-hangup') {
-            cleanupCall(false);
-            state.callState = nextState;
-            render();
+            cleanupCall(false, 'ended');
+        }
         }
     }
 }
