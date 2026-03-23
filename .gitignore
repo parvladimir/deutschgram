@@ -1,0 +1,7 @@
+.env
+config.local.php
+storage/*.sqlite
+storage/*.sqlite-shm
+storage/*.sqlite-wal
+.vscode/
+.idea/

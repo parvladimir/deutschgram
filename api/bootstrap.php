@@ -2,8 +2,163 @@
 
 declare(strict_types=1);
 
-const DB_PATH = __DIR__ . '/../storage/deutschgram.sqlite';
+const DEFAULT_DB_DRIVER = 'sqlite';
+const DEFAULT_SQLITE_DB_PATH = __DIR__ . '/../storage/deutschgram.sqlite';
+const DEFAULT_DB_HOST = '127.0.0.1';
+const DEFAULT_DB_PORT = 3306;
+const DEFAULT_DB_CHARSET = 'utf8mb4';
 const ONLINE_WINDOW_SECONDS = 20;
+
+loadEnvironmentFiles();
+
+$localConfigFile = __DIR__ . '/../config.local.php';
+if (is_file($localConfigFile)) {
+    require_once $localConfigFile;
+}
+
+function loadEnvironmentFiles(): void
+{
+    $envPath = __DIR__ . '/../.env';
+    if (!is_file($envPath)) {
+        return;
+    }
+
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return;
+    }
+
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '' || str_starts_with($trimmed, '#')) {
+            continue;
+        }
+
+        $parts = explode('=', $trimmed, 2);
+        if (count($parts) !== 2) {
+            continue;
+        }
+
+        $name = trim($parts[0]);
+        $value = trim($parts[1]);
+
+        if ($name === '') {
+            continue;
+        }
+
+        if (
+            (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+            (str_starts_with($value, "'") && str_ends_with($value, "'"))
+        ) {
+            $value = substr($value, 1, -1);
+        }
+
+        if (getenv($name) === false) {
+            putenv($name . '=' . $value);
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
+
+function configValue(string $constantName, string $envName, ?string $default = null): ?string
+{
+    if (defined($constantName)) {
+        $value = constant($constantName);
+        return is_string($value) ? $value : (string) $value;
+    }
+
+    $value = getenv($envName);
+    if ($value !== false && $value !== '') {
+        return (string) $value;
+    }
+
+    return $default;
+}
+
+function configIntValue(string $constantName, string $envName, int $default): int
+{
+    $value = configValue($constantName, $envName, (string) $default);
+    return is_numeric($value) ? (int) $value : $default;
+}
+
+function dbRuntimeConfig(): array
+{
+    static $config = null;
+
+    if (is_array($config)) {
+        return $config;
+    }
+
+    $dsn = configValue('DEUTSCHGRAM_DB_DSN', 'DEUTSCHGRAM_DB_DSN');
+    $username = configValue('DEUTSCHGRAM_DB_USER', 'DEUTSCHGRAM_DB_USER', '') ?? '';
+    $password = configValue('DEUTSCHGRAM_DB_PASSWORD', 'DEUTSCHGRAM_DB_PASSWORD', '') ?? '';
+
+    if ($dsn !== null && $dsn !== '') {
+        $driver = strtolower((string) strtok($dsn, ':'));
+        if ($driver === 'mariadb') {
+            $dsn = 'mysql' . substr($dsn, strlen('mariadb'));
+            $driver = 'mysql';
+        }
+
+        $config = [
+            'driver' => $driver,
+            'dsn' => $dsn,
+            'username' => $username,
+            'password' => $password,
+            'path' => null,
+        ];
+
+        return $config;
+    }
+
+    $driver = strtolower(configValue('DEUTSCHGRAM_DB_DRIVER', 'DEUTSCHGRAM_DB_DRIVER', DEFAULT_DB_DRIVER) ?? DEFAULT_DB_DRIVER);
+    if ($driver === 'mariadb') {
+        $driver = 'mysql';
+    }
+
+    if ($driver === 'mysql') {
+        $host = configValue('DEUTSCHGRAM_DB_HOST', 'DEUTSCHGRAM_DB_HOST', DEFAULT_DB_HOST) ?? DEFAULT_DB_HOST;
+        $port = configIntValue('DEUTSCHGRAM_DB_PORT', 'DEUTSCHGRAM_DB_PORT', DEFAULT_DB_PORT);
+        $database = configValue('DEUTSCHGRAM_DB_NAME', 'DEUTSCHGRAM_DB_NAME');
+        $charset = configValue('DEUTSCHGRAM_DB_CHARSET', 'DEUTSCHGRAM_DB_CHARSET', DEFAULT_DB_CHARSET) ?? DEFAULT_DB_CHARSET;
+
+        if ($database === null || trim($database) === '') {
+            throw new RuntimeException('MySQL database name is not configured.');
+        }
+
+        $config = [
+            'driver' => 'mysql',
+            'dsn' => sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $database, $charset),
+            'username' => $username,
+            'password' => $password,
+            'path' => null,
+        ];
+
+        return $config;
+    }
+
+    if ($driver !== 'sqlite') {
+        throw new RuntimeException('Unsupported database driver: ' . $driver);
+    }
+
+    $path = configValue('DEUTSCHGRAM_DB_PATH', 'DEUTSCHGRAM_DB_PATH', DEFAULT_SQLITE_DB_PATH) ?? DEFAULT_SQLITE_DB_PATH;
+
+    $config = [
+        'driver' => 'sqlite',
+        'dsn' => 'sqlite:' . $path,
+        'username' => '',
+        'password' => '',
+        'path' => $path,
+    ];
+
+    return $config;
+}
+
+function dbDriver(): string
+{
+    return dbRuntimeConfig()['driver'];
+}
 
 function db(): PDO
 {
@@ -13,15 +168,33 @@ function db(): PDO
         return $pdo;
     }
 
-    $storageDir = dirname(DB_PATH);
-    if (!is_dir($storageDir)) {
-        mkdir($storageDir, 0777, true);
+    $config = dbRuntimeConfig();
+
+    if ($config['driver'] === 'sqlite') {
+        $storageDir = dirname((string) $config['path']);
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
     }
 
-    $pdo = new PDO('sqlite:' . DB_PATH);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $pdo->exec('PRAGMA foreign_keys = ON');
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ];
+
+    if ($config['driver'] === 'mysql') {
+        $options[PDO::ATTR_EMULATE_PREPARES] = false;
+    }
+
+    $pdo = new PDO($config['dsn'], $config['username'], $config['password'], $options);
+
+    if ($config['driver'] === 'sqlite') {
+        $pdo->exec('PRAGMA foreign_keys = ON');
+    }
+
+    if ($config['driver'] === 'mysql') {
+        $pdo->exec("SET time_zone = '+00:00'");
+    }
 
     initializeDatabase($pdo);
 
@@ -29,6 +202,18 @@ function db(): PDO
 }
 
 function initializeDatabase(PDO $pdo): void
+{
+    if (dbDriver() === 'mysql') {
+        initializeMySqlDatabase($pdo);
+        cleanupOldSignals($pdo);
+        return;
+    }
+
+    initializeSqliteDatabase($pdo);
+    cleanupOldSignals($pdo);
+}
+
+function initializeSqliteDatabase(PDO $pdo): void
 {
     $pdo->exec(
         <<<'SQL'
@@ -86,6 +271,86 @@ function initializeDatabase(PDO $pdo): void
         CREATE INDEX IF NOT EXISTS idx_users_last_seen ON users(last_seen_at);
         SQL
     );
+}
+
+function initializeMySqlDatabase(PDO $pdo): void
+{
+    $pdo->exec(
+        <<<'SQL'
+        CREATE TABLE IF NOT EXISTS users (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(80) NOT NULL,
+            display_name VARCHAR(120) NOT NULL,
+            created_at DATETIME NOT NULL,
+            last_seen_at DATETIME NOT NULL,
+            UNIQUE KEY uniq_users_username (username),
+            KEY idx_users_last_seen (last_seen_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS conversations (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            kind VARCHAR(20) NOT NULL DEFAULT 'direct',
+            created_at DATETIME NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS conversation_members (
+            conversation_id BIGINT UNSIGNED NOT NULL,
+            user_id BIGINT UNSIGNED NOT NULL,
+            joined_at DATETIME NOT NULL,
+            last_read_message_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+            PRIMARY KEY (conversation_id, user_id),
+            KEY idx_members_user_id (user_id),
+            CONSTRAINT fk_conversation_members_conversation
+                FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+            CONSTRAINT fk_conversation_members_user
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS messages (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            conversation_id BIGINT UNSIGNED NOT NULL,
+            sender_id BIGINT UNSIGNED NOT NULL,
+            body TEXT NOT NULL,
+            kind VARCHAR(20) NOT NULL DEFAULT 'text',
+            created_at DATETIME NOT NULL,
+            KEY idx_messages_conversation_id (conversation_id, id),
+            KEY idx_messages_sender_id (sender_id),
+            CONSTRAINT fk_messages_conversation
+                FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+            CONSTRAINT fk_messages_sender
+                FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+        CREATE TABLE IF NOT EXISTS signals (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            conversation_id BIGINT UNSIGNED NOT NULL,
+            sender_id BIGINT UNSIGNED NOT NULL,
+            recipient_id BIGINT UNSIGNED NOT NULL,
+            type VARCHAR(40) NOT NULL,
+            payload LONGTEXT NULL,
+            created_at DATETIME NOT NULL,
+            consumed_at DATETIME NULL DEFAULT NULL,
+            KEY idx_signals_recipient_consumed (recipient_id, consumed_at, id),
+            KEY idx_signals_conversation_id (conversation_id),
+            CONSTRAINT fk_signals_conversation
+                FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
+            CONSTRAINT fk_signals_sender
+                FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+            CONSTRAINT fk_signals_recipient
+                FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        SQL
+    );
+}
+
+function cleanupOldSignals(PDO $pdo): void
+{
+    if (dbDriver() === 'mysql') {
+        $pdo->exec(
+            "DELETE FROM signals WHERE consumed_at IS NOT NULL AND created_at < (UTC_TIMESTAMP() - INTERVAL 2 DAY)"
+        );
+        return;
+    }
 
     $pdo->exec(
         "DELETE FROM signals WHERE consumed_at IS NOT NULL AND created_at < datetime('now', '-2 days')"
@@ -95,6 +360,13 @@ function initializeDatabase(PDO $pdo): void
 function nowUtc(): string
 {
     return gmdate('Y-m-d H:i:s');
+}
+
+function readProgressExpression(): string
+{
+    return dbDriver() === 'mysql'
+        ? 'GREATEST(last_read_message_id, :last_read_message_id)'
+        : 'MAX(last_read_message_id, :last_read_message_id)';
 }
 
 function jsonResponse(array $payload, int $statusCode = 200): void
@@ -633,7 +905,7 @@ function markConversationRead(int $conversationId, int $userId): void
 
     $statement = db()->prepare(
         'UPDATE conversation_members
-         SET last_read_message_id = MAX(last_read_message_id, :last_read_message_id)
+         SET last_read_message_id = ' . readProgressExpression() . '
          WHERE conversation_id = :conversation_id AND user_id = :user_id'
     );
     $statement->execute([
