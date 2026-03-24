@@ -348,3 +348,21 @@ function listUsers(int $currentUserId): array
         $statement->fetchAll()
     );
 }
+function adminKey(): string
+{
+    return configValue('DEUTSCHGRAM_ADMIN_KEY', 'DEUTSCHGRAM_ADMIN_KEY', 'deutschgram-admin') ?? 'deutschgram-admin';
+}
+
+function authorizeAdminKey(?string $providedKey): void
+{
+    $expected = trim(adminKey());
+    $actual = trim((string) $providedKey);
+
+    if ($expected === '') {
+        fail('Admin key is not configured.', 500);
+    }
+
+    if ($actual === '' || !hash_equals($expected, $actual)) {
+        fail('Wrong admin key.', 403);
+    }
+}

@@ -143,7 +143,10 @@ button:disabled {
 .message-meta,
 .conversation-preview,
 .user-status,
-.eyebrow {
+.eyebrow,
+.invite-note,
+.invite-item-meta,
+.invite-item-link {
     color: var(--text-soft);
 }
 
@@ -243,6 +246,59 @@ textarea {
     color: var(--text-soft);
 }
 
+.invite-badge,
+.status-pill,
+.unread-pill {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.invite-badge-pending,
+.status-pill.offline {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-soft);
+}
+
+.invite-badge-ready,
+.status-pill.online {
+    background: rgba(73, 182, 140, 0.16);
+    color: #87ebc2;
+}
+
+.invite-badge-claimed,
+.unread-pill {
+    background: rgba(240, 121, 74, 0.22);
+    color: var(--accent-soft);
+}
+
+.invite-note {
+    margin: 0;
+    font-size: 0.94rem;
+}
+
+.inline-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-panel,
+.admin-workspace,
+.admin-create-form {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-list-heading {
+    margin-top: 8px;
+}
+
+.invite-item,
 .user-item,
 .conversation-item {
     width: 100%;
@@ -251,17 +307,51 @@ textarea {
     border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid transparent;
+}
+
+.user-item,
+.conversation-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
+.invite-item {
+    display: grid;
+    gap: 10px;
+}
+
 .user-item:hover,
 .conversation-item:hover,
-.conversation-item.active {
+.conversation-item.active,
+.invite-item:hover {
     border-color: rgba(255, 211, 191, 0.22);
     background: rgba(255, 255, 255, 0.07);
+}
+
+.invite-item-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.invite-item-title,
+.user-name,
+.conversation-name {
+    font-weight: 700;
+}
+
+.invite-item-link {
+    font-size: 0.88rem;
+    word-break: break-all;
+}
+
+.invite-item-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .user-main,
@@ -270,35 +360,6 @@ textarea {
     flex-direction: column;
     gap: 4px;
     min-width: 0;
-}
-
-.user-name,
-.conversation-name {
-    font-weight: 700;
-}
-
-.status-pill,
-.unread-pill {
-    flex-shrink: 0;
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.status-pill.online {
-    background: rgba(73, 182, 140, 0.16);
-    color: #87ebc2;
-}
-
-.status-pill.offline {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-soft);
-}
-
-.unread-pill {
-    background: rgba(240, 121, 74, 0.22);
-    color: var(--accent-soft);
 }
 
 .chat-header {
@@ -364,8 +425,7 @@ textarea {
     align-items: end;
 }
 
-.call-status-panel,
-.notes-panel {
+.call-status-panel {
     overflow: hidden;
 }
 
@@ -410,15 +470,6 @@ video {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     margin: 16px 0 10px;
-}
-
-.notes-list {
-    margin: 0;
-    padding-left: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    color: var(--text-soft);
 }
 
 .modal {
@@ -495,8 +546,6 @@ video {
 
     .call-panel {
         grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
     }
 }
 
@@ -506,10 +555,6 @@ video {
         padding: 16px;
     }
 
-    .call-panel {
-        grid-template-columns: 1fr;
-    }
-
     .chat-header,
     .composer {
         grid-template-columns: 1fr;
@@ -517,7 +562,9 @@ video {
     }
 
     .header-actions,
-    .modal-actions {
+    .modal-actions,
+    .inline-actions,
+    .invite-item-actions {
         flex-direction: column;
     }
 

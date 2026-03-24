@@ -19,38 +19,62 @@ declare(strict_types=1);
             <div class="brand-card">
                 <p class="eyebrow">private family line</p>
                 <h1>Deutschgram Call</h1>
-                <p class="brand-copy">
-                    Закрытый семейный веб-мессенджер: личные сообщения, аудио и видеозвонки прямо в браузере.
-                </p>
+                <p class="brand-copy">Пока вход только по приглашениям.</p>
             </div>
 
-            <section class="panel invite-panel">
+            <section class="panel admin-panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Доступ по приглашениям</h2>
-                    <p>Главная страница открыта всем, но вход пока работает только по персональной invite-ссылке.</p>
+                    <h2>Админка</h2>
+                    <p>Создавайте приглашения и копируйте готовые ссылки прямо отсюда.</p>
                 </div>
-                <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидается invite-ссылка</div>
-                <p id="inviteStatusText" class="helper-text">
-                    Откройте сайт по специальной ссылке вида <code>?invite=...</code>, чтобы войти.
-                </p>
-                <p id="inviteNote" class="invite-note hidden"></p>
+
+                <form id="adminLoginForm" class="admin-login" autocomplete="off">
+                    <label class="field">
+                        <span>Ключ администратора</span>
+                        <input type="password" id="adminKeyInput" maxlength="120" placeholder="Введите admin key">
+                    </label>
+                    <div class="inline-actions">
+                        <button type="submit" class="secondary-button">Открыть админку</button>
+                        <button type="button" id="adminLogoutButton" class="secondary-button hidden">Выйти</button>
+                    </div>
+                </form>
+
+                <p id="adminStatusText" class="helper-text">Введите ключ администратора, чтобы управлять приглашениями.</p>
+
+                <div id="adminWorkspace" class="hidden admin-workspace">
+                    <form id="createInviteForm" class="admin-create-form" autocomplete="off">
+                        <label class="field">
+                            <span>Имя для приглашения</span>
+                            <input type="text" id="inviteNoteInput" maxlength="255" placeholder="Например, Mama">
+                        </label>
+                        <button type="submit" id="createInviteButton" class="primary-button wide-button">Создать ссылку</button>
+                    </form>
+
+                    <div class="panel-heading compact-heading admin-list-heading">
+                        <h2>Приглашения</h2>
+                        <p>Можно копировать ссылки и отзывать старые приглашения.</p>
+                    </div>
+                    <div id="adminInvitesList" class="stack-list empty-list">Приглашения появятся здесь после входа в админку.</div>
+                </div>
             </section>
 
             <form id="loginForm" class="panel auth-panel" autocomplete="off">
-                <div class="panel-heading">
-                    <h2>Войти</h2>
-                    <p>Введите имя пользователя. Оно закрепится за этой invite-ссылкой.</p>
+                <div class="panel-heading compact-heading">
+                    <h2>Вход</h2>
+                    <p>Пока только по приглашениям.</p>
                 </div>
+
+                <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидается приглашение</div>
+                <p id="inviteStatusText" class="helper-text">Откройте сайт по invite-ссылке, чтобы войти.</p>
+                <p id="inviteNote" class="invite-note hidden"></p>
 
                 <label class="field">
                     <span>Имя пользователя</span>
                     <input type="text" id="usernameInput" name="username" maxlength="80" placeholder="Например, mama" required>
                 </label>
 
-                <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>
-                    Открыть мессенджер
-                </button>
-                <p id="authHint" class="helper-text">Вход доступен только после открытия сайта по приглашению.</p>
+                <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>Открыть мессенджер</button>
+                <p id="authHint" class="helper-text">Сначала откройте рабочую invite-ссылку.</p>
             </form>
 
             <section id="currentUserCard" class="panel profile-panel hidden"></section>
@@ -58,21 +82,17 @@ declare(strict_types=1);
             <section class="panel">
                 <div class="panel-heading compact-heading">
                     <h2>Люди</h2>
-                    <p>Кто уже появился в приложении</p>
+                    <p>Кто уже в приложении</p>
                 </div>
-                <div id="usersList" class="stack-list empty-list">
-                    Список появится после входа.
-                </div>
+                <div id="usersList" class="stack-list empty-list">Список появится после входа.</div>
             </section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
                     <h2>Диалоги</h2>
-                    <p>Личные переписки и непрочитанные сообщения</p>
+                    <p>Личные переписки</p>
                 </div>
-                <div id="conversationsList" class="stack-list empty-list">
-                    Пока нет диалогов.
-                </div>
+                <div id="conversationsList" class="stack-list empty-list">Пока нет диалогов.</div>
             </section>
         </aside>
 
@@ -89,7 +109,7 @@ declare(strict_types=1);
             </header>
 
             <section id="messagesPanel" class="panel messages-panel empty-state">
-                Войдите по приглашению и выберите человека слева, чтобы начать переписку или звонок.
+                Выберите человека слева, чтобы начать чат или звонок.
             </section>
 
             <form id="messageForm" class="panel composer" autocomplete="off">
@@ -123,22 +143,7 @@ declare(strict_types=1);
                     <button id="hangupButton" class="danger-button" type="button" disabled>Завершить</button>
                 </div>
 
-                <p class="helper-text">
-                    Для звонков используется WebRTC. В браузере нужно разрешить доступ к микрофону и камере.
-                </p>
-            </section>
-
-            <section class="panel notes-panel">
-                <div class="panel-heading compact-heading">
-                    <h2>Что уже есть</h2>
-                </div>
-                <ul class="notes-list">
-                    <li>Вход по invite-ссылке и имени пользователя.</li>
-                    <li>Личные диалоги один на один.</li>
-                    <li>Текстовые сообщения с автосинхронизацией.</li>
-                    <li>Аудио- и видеозвонки из браузера.</li>
-                    <li>Онлайн-статус собеседника.</li>
-                </ul>
+                <p class="helper-text">Для звонков используется WebRTC. В браузере нужно разрешить доступ к микрофону и камере.</p>
             </section>
         </aside>
     </div>
@@ -159,6 +164,23 @@ declare(strict_types=1);
         <article class="message-bubble">
             <div class="message-meta"></div>
             <div class="message-body"></div>
+        </article>
+    </template>
+
+    <template id="inviteRowTemplate">
+        <article class="invite-item">
+            <div class="invite-item-head">
+                <div>
+                    <div class="invite-item-title"></div>
+                    <div class="invite-item-meta"></div>
+                </div>
+                <span class="status-pill invite-item-status"></span>
+            </div>
+            <div class="invite-item-link"></div>
+            <div class="invite-item-actions">
+                <button type="button" class="secondary-button copy-invite-button">Скопировать</button>
+                <button type="button" class="danger-button revoke-invite-button">Отозвать</button>
+            </div>
         </article>
     </template>
 

@@ -123,6 +123,35 @@ try {
             jsonResponse(['ok' => true]);
             break;
 
+        case 'admin_invites':
+            requireMethod('GET');
+            authorizeAdminKey((string) ($data['admin_key'] ?? ''));
+            jsonResponse([
+                'ok' => true,
+                'invites' => listInvites(),
+            ]);
+            break;
+
+        case 'admin_create_invite':
+            requireMethod('POST');
+            authorizeAdminKey((string) ($data['admin_key'] ?? ''));
+            jsonResponse([
+                'ok' => true,
+                'invite' => createInvite((string) ($data['note'] ?? '')),
+                'invites' => listInvites(),
+            ]);
+            break;
+
+        case 'admin_revoke_invite':
+            requireMethod('POST');
+            authorizeAdminKey((string) ($data['admin_key'] ?? ''));
+            revokeInvite((string) ($data['invite_token'] ?? ''));
+            jsonResponse([
+                'ok' => true,
+                'invites' => listInvites(),
+            ]);
+            break;
+
         default:
             fail('Unknown API action.', 404);
     }

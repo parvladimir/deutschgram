@@ -1,37 +1,23 @@
 # Deutschgram Call
 
-Р’РµР±-РјРµСЃСЃРµРЅРґР¶РµСЂ РґР»СЏ Р»РёС‡РЅРѕРіРѕ РѕР±С‰РµРЅРёСЏ: Р»РёС‡РЅС‹Рµ С‡Р°С‚С‹, Р°СѓРґРёРѕР·РІРѕРЅРєРё Рё РІРёРґРµРѕР·РІРѕРЅРєРё РїСЂСЏРјРѕ РІ Р±СЂР°СѓР·РµСЂРµ.
+Invite-only family messenger for browser-based text, audio, and video calls.
 
-## Р§С‚Рѕ РІРЅСѓС‚СЂРё
+## Local setup
 
-- PHP API Р±РµР· РІРЅРµС€РЅРёС… Р·Р°РІРёСЃРёРјРѕСЃС‚РµР№.
-- РџРѕРґРґРµСЂР¶РєР° РґРІСѓС… СЂРµР¶РёРјРѕРІ Р‘Р”: Р»РѕРєР°Р»СЊРЅС‹Р№ SQLite Рё production MySQL / MariaDB.
-- Р§РёСЃС‚С‹Р№ HTML, CSS Рё JavaScript Р±РµР· СЃР±РѕСЂРєРё.
-- WebRTC РґР»СЏ Р°СѓРґРёРѕ- Рё РІРёРґРµРѕСЃРІСЏР·Рё РјРµР¶РґСѓ РґРІСѓРјСЏ СѓС‡Р°СЃС‚РЅРёРєР°РјРё.
+1. Start WAMP and make sure Apache and MySQL are running.
+2. Open `http://localhost/deutschgram/`.
+3. Admin invite management is available in the web UI.
+4. The local admin key is configured through `.env`.
 
-## Р›РѕРєР°Р»СЊРЅС‹Р№ Р·Р°РїСѓСЃРє
+## Database
 
-1. РћС‚РєСЂРѕР№С‚Рµ `http://localhost/deutschgram/`.
-2. Р’ РѕРґРЅРѕРј Р±СЂР°СѓР·РµСЂРµ РІРѕР№РґРёС‚Рµ РїРѕРґ РѕРґРЅРёРј РёРјРµРЅРµРј, РІРѕ РІС‚РѕСЂРѕРј РїРѕРґ РґСЂСѓРіРёРј.
-3. Р Р°Р·СЂРµС€РёС‚Рµ РґРѕСЃС‚СѓРї Рє РјРёРєСЂРѕС„РѕРЅСѓ Рё РєР°РјРµСЂРµ.
-4. РћС‚РєСЂРѕР№С‚Рµ РґРёР°Р»РѕРі Рё РїСЂРѕРІРµСЂСЊС‚Рµ СЃРѕРѕР±С‰РµРЅРёСЏ, Р°СѓРґРёРѕ Рё РІРёРґРµРѕ.
+- MySQL is used by default.
+- Runtime config is loaded from `.env` or `config.local.php`.
+- Migrations are stored in `database/migrations`.
+- Run migrations with `database/migrate.php`.
 
-## РќР°СЃС‚СЂРѕР№РєР° Р±Р°Р·С‹
+## Invite flow
 
-Р РµРєРѕРјРµРЅРґСѓРµРјС‹Р№ production-РІР°СЂРёР°РЅС‚:
-
-- MySQL / MariaDB С‡РµСЂРµР· `.env` РёР»Рё `config.local.php`.
-- РџСЂРёРјРµСЂ РїРµСЂРµРјРµРЅРЅС‹С… Р»РµР¶РёС‚ РІ `.env.example`.
-- РџСЂРёРјРµСЂ PHP-РєРѕРЅС„РёРіР° Р»РµР¶РёС‚ РІ `config.local.example.php`.
-- SQL-СЃС…РµРјР° РґР»СЏ СЂСѓС‡РЅРѕРіРѕ РёРјРїРѕСЂС‚Р° Р»РµР¶РёС‚ РІ `database/mysql/schema.sql`.
-
-## Р”РµРїР»РѕР№ Рё Git
-
-- РџРѕС€Р°РіРѕРІС‹Р№ РґРµРїР»РѕР№ РЅР° IONOS: [DEPLOY_IONOS.md](C:/wamp64/www/deutschgram/DEPLOY_IONOS.md)
-- GitHub + Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РґРµРїР»РѕР№: [GIT_IONOS_WORKFLOW.md](C:/wamp64/www/deutschgram/GIT_IONOS_WORKFLOW.md)
-
-## РћРіСЂР°РЅРёС‡РµРЅРёСЏ MVP
-
-- РџРѕРєР° РЅРµС‚ РЅРѕСЂРјР°Р»СЊРЅРѕР№ Р°РІС‚РѕСЂРёР·Р°С†РёРё.
-- РўРѕР»СЊРєРѕ Р»РёС‡РЅС‹Рµ РґРёР°Р»РѕРіРё РѕРґРёРЅ РЅР° РѕРґРёРЅ.
-- Р”Р»СЏ СЃС‚Р°Р±РёР»СЊРЅС‹С… Р·РІРѕРЅРєРѕРІ С‡РµСЂРµР· РёРЅС‚РµСЂРЅРµС‚ РїРѕР·Р¶Рµ РЅСѓР¶РµРЅ TURN-СЃРµСЂРІРµСЂ.
+- Users can enter only through an invite link.
+- The first successful login binds the invite to one username.
+- Admin can create and revoke invite links from the built-in admin panel.

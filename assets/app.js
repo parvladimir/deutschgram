@@ -1,3 +1,52 @@
+const UI = {
+    online: '\u043E\u043D\u043B\u0430\u0439\u043D',
+    offline: '\u043E\u0444\u043B\u0430\u0439\u043D',
+    idle: '\u043D\u0435 \u0432 \u0441\u0435\u0442\u0438',
+    noInviteBadge: '\u041D\u0435\u0442 invite-\u0441\u0441\u044B\u043B\u043A\u0438',
+    invitePendingBadge: '\u041F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u043C invite...',
+    inviteReadyBadge: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0430\u043A\u0442\u0438\u0432\u043D\u043E',
+    inviteClaimedBadge: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0437\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u043E',
+    inviteErrorBadge: 'Invite \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u0435\u043D',
+    noInviteText: '\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0441\u0430\u0439\u0442 \u043F\u043E invite-\u0441\u0441\u044B\u043B\u043A\u0435, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0439\u0442\u0438.',
+    inviteLoadingText: '\u041F\u0440\u043E\u0432\u0435\u0440\u044F\u044E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435...',
+    inviteClaimedTextPrefix: '\u042D\u0442\u0430 \u0441\u0441\u044B\u043B\u043A\u0430 \u0443\u0436\u0435 \u0437\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u0430 \u0437\u0430 ',
+    inviteClaimedTextSuffix: '. \u0412\u043E\u0439\u0442\u0438 \u043C\u043E\u0436\u043D\u043E \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434 \u044D\u0442\u0438\u043C \u0438\u043C\u0435\u043D\u0435\u043C.',
+    inviteReadyText: '\u0421\u0441\u044B\u043B\u043A\u0430 \u0430\u043A\u0442\u0438\u0432\u043D\u0430. \u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0438\u043C\u044F \u0438 \u0432\u043E\u0439\u0434\u0438\u0442\u0435.',
+    inviteNotePrefix: '\u0418\u043C\u044F \u0434\u043B\u044F \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F: ',
+    signInFirst: '\u0412\u043E\u0439\u0434\u0438\u0442\u0435 \u043F\u043E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044E.',
+    noUsers: '\u0414\u0440\u0443\u0433\u0438\u0435 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0437\u0434\u0435\u0441\u044C \u043F\u043E\u0441\u043B\u0435 \u0432\u0445\u043E\u0434\u0430.',
+    noConversations: '\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0447\u0430\u0442 \u0438\u0437 \u0441\u043F\u0438\u0441\u043A\u0430 \u043B\u044E\u0434\u0435\u0439.',
+    newConversation: '\u041D\u043E\u0432\u044B\u0439 \u0434\u0438\u0430\u043B\u043E\u0433 \u0431\u0435\u0437 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0439',
+    headerChoose: '\u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0438\u0430\u043B\u043E\u0433',
+    headerOnline: '\u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A \u0441\u0435\u0439\u0447\u0430\u0441 \u043E\u043D\u043B\u0430\u0439\u043D',
+    headerOffline: '\u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A \u0441\u0435\u0439\u0447\u0430\u0441 \u043E\u0444\u043B\u0430\u0439\u043D',
+    noConversationSelected: '\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0447\u0435\u043B\u043E\u0432\u0435\u043A\u0430 \u0441\u043B\u0435\u0432\u0430, \u0447\u0442\u043E\u0431\u044B \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0447\u0430\u0442 \u0438 \u043D\u0430\u0447\u0430\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A.',
+    noMessages: '\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0439. \u041D\u0430\u0447\u043D\u0438\u0442\u0435 \u0440\u0430\u0437\u0433\u043E\u0432\u043E\u0440 \u043F\u0435\u0440\u0432\u044B\u043C.',
+    loggedInHint: '\u0412\u0445\u043E\u0434 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D. \u0422\u0435\u043F\u0435\u0440\u044C \u043C\u043E\u0436\u043D\u043E \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0434\u0438\u0430\u043B\u043E\u0433.',
+    needInviteHint: '\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0440\u0430\u0431\u043E\u0447\u0443\u044E invite-\u0441\u0441\u044B\u043B\u043A\u0443.',
+    adminNeedKey: '\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043A\u043B\u044E\u0447 \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430, \u0447\u0442\u043E\u0431\u044B \u0443\u043F\u0440\u0430\u0432\u043B\u044F\u0442\u044C \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F\u043C\u0438.',
+    adminLoading: '\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u044E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F...',
+    adminReady: '\u0410\u0434\u043C\u0438\u043D\u043A\u0430 \u0433\u043E\u0442\u043E\u0432\u0430. \u041C\u043E\u0436\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u0432\u0430\u0442\u044C \u043D\u043E\u0432\u044B\u0435 invite-\u0441\u0441\u044B\u043B\u043A\u0438.',
+    adminEmpty: '\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0439.',
+    adminCopyDone: '\u0421\u0441\u044B\u043B\u043A\u0430 \u0441\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0430.',
+    adminCreatedPrefix: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0441\u043E\u0437\u0434\u0430\u043D\u043E: ',
+    adminRevoked: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u043E\u0442\u043E\u0437\u0432\u0430\u043D\u043E.',
+    inviteActive: '\u0410\u043A\u0442\u0438\u0432\u043D\u043E',
+    inviteUsed: '\u0417\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u043E',
+    inviteRevoked: '\u041E\u0442\u043E\u0437\u0432\u0430\u043D\u043E',
+    inviteNeverUsed: '\u0435\u0449\u0435 \u043D\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u043E',
+    inviteLastUsedPrefix: '\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0432\u0445\u043E\u0434: ',
+    callIdle: '\u0417\u0432\u043E\u043D\u043E\u043A \u0435\u0449\u0435 \u043D\u0435 \u043D\u0430\u0447\u0430\u0442.',
+    callEnded: '\u0417\u0432\u043E\u043D\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D.',
+    callFailed: '\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A.',
+    incomingAudio: '\u0430\u0443\u0434\u0438\u043E\u0437\u0432\u043E\u043D\u043E\u043A',
+    incomingVideo: '\u0432\u0438\u0434\u0435\u043E\u0437\u0432\u043E\u043D\u043E\u043A',
+    muteLabel: '\u041C\u0438\u043A\u0440\u043E\u0444\u043E\u043D',
+    unmuteLabel: '\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D',
+    cameraLabel: '\u041A\u0430\u043C\u0435\u0440\u0430',
+    cameraOnLabel: '\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u043A\u0430\u043C\u0435\u0440\u0443'
+};
+
 const state = {
     inviteToken: null,
     inviteInfo: null,
@@ -19,6 +68,10 @@ const state = {
     incomingOffer: null,
     isMuted: false,
     isCameraEnabled: true,
+    adminKey: null,
+    adminInvites: [],
+    adminLoading: false,
+    adminError: ''
 };
 
 const dom = {
@@ -51,16 +104,27 @@ const dom = {
     acceptCallButton: document.getElementById('acceptCallButton'),
     declineCallButton: document.getElementById('declineCallButton'),
     messageTemplate: document.getElementById('messageTemplate'),
+    inviteRowTemplate: document.getElementById('inviteRowTemplate'),
+    adminLoginForm: document.getElementById('adminLoginForm'),
+    adminKeyInput: document.getElementById('adminKeyInput'),
+    adminLogoutButton: document.getElementById('adminLogoutButton'),
+    adminStatusText: document.getElementById('adminStatusText'),
+    adminWorkspace: document.getElementById('adminWorkspace'),
+    createInviteForm: document.getElementById('createInviteForm'),
+    inviteNoteInput: document.getElementById('inviteNoteInput'),
+    createInviteButton: document.getElementById('createInviteButton'),
+    adminInvitesList: document.getElementById('adminInvitesList')
 };
 
 const USER_STORAGE_KEY = 'deutschgram-user-id';
 const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
+const ADMIN_STORAGE_KEY = 'deutschgram-admin-key';
 const SIGNAL_API = 'api/index.php';
 const rtcConfig = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-    ],
+        { urls: 'stun:stun1.l.google.com:19302' }
+    ]
 };
 
 function normalizeInviteToken(value) {
@@ -78,19 +142,32 @@ function escapeHtml(value) {
 
 function formatTime(dateString) {
     const date = new Date(dateString.replace(' ', 'T') + 'Z');
+    return new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(date);
+}
+
+function formatDateTime(dateString) {
+    const date = new Date(dateString.replace(' ', 'T') + 'Z');
     return new Intl.DateTimeFormat('ru-RU', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
     }).format(date);
 }
 
 function relativePresence(user) {
-    return user.is_online ? 'online' : 'offline';
+    return user.is_online ? UI.online : UI.offline;
 }
 
 function setAuthHint(message, isError = false) {
     dom.authHint.textContent = message;
     dom.authHint.style.color = isError ? '#ffb9ae' : '';
+}
+
+function setAdminStatus(message, isError = false) {
+    dom.adminStatusText.textContent = message;
+    dom.adminStatusText.style.color = isError ? '#ffb9ae' : '';
 }
 
 function setInviteBadge(label, mode) {
@@ -103,8 +180,8 @@ function updateInviteState() {
     const claimedUsername = state.inviteInfo?.assigned_username || '';
 
     if (!state.inviteToken) {
-        setInviteBadge('Нет invite-ссылки', 'pending');
-        dom.inviteStatusText.textContent = 'Откройте сайт по персональной ссылке с параметром invite, чтобы разблокировать вход.';
+        setInviteBadge(UI.noInviteBadge, 'pending');
+        dom.inviteStatusText.textContent = UI.noInviteText;
         dom.inviteNote.classList.add('hidden');
         dom.openMessengerButton.disabled = true;
         dom.usernameInput.readOnly = false;
@@ -112,7 +189,7 @@ function updateInviteState() {
     }
 
     if (state.inviteError) {
-        setInviteBadge('Invite недоступен', 'pending');
+        setInviteBadge(UI.inviteErrorBadge, 'pending');
         dom.inviteStatusText.textContent = state.inviteError;
         dom.inviteNote.classList.add('hidden');
         dom.openMessengerButton.disabled = true;
@@ -121,8 +198,8 @@ function updateInviteState() {
     }
 
     if (!state.inviteInfo) {
-        setInviteBadge('Проверяем invite...', 'pending');
-        dom.inviteStatusText.textContent = 'Проверяю приглашение и подготавливаю вход...';
+        setInviteBadge(UI.invitePendingBadge, 'pending');
+        dom.inviteStatusText.textContent = UI.inviteLoadingText;
         dom.inviteNote.classList.add('hidden');
         dom.openMessengerButton.disabled = true;
         dom.usernameInput.readOnly = false;
@@ -130,18 +207,21 @@ function updateInviteState() {
     }
 
     if (claimedUsername) {
-        setInviteBadge('Приглашение закреплено', 'claimed');
-        dom.inviteStatusText.textContent = `Эта ссылка уже закреплена за @${claimedUsername}. Войти можно только под этим именем.`;
+        setInviteBadge(UI.inviteClaimedBadge, 'claimed');
+        dom.inviteStatusText.textContent = `${UI.inviteClaimedTextPrefix}@${claimedUsername}${UI.inviteClaimedTextSuffix}`;
         dom.usernameInput.value = claimedUsername;
         dom.usernameInput.readOnly = true;
     } else {
-        setInviteBadge('Приглашение активно', 'ready');
-        dom.inviteStatusText.textContent = 'Ссылка активна. Введите имя пользователя и оно закрепится за этим приглашением.';
+        setInviteBadge(UI.inviteReadyBadge, 'ready');
+        dom.inviteStatusText.textContent = UI.inviteReadyText;
         dom.usernameInput.readOnly = false;
+        if (!dom.usernameInput.value.trim() && state.inviteInfo.note) {
+            dom.usernameInput.value = state.inviteInfo.note;
+        }
     }
 
     if (state.inviteInfo.note) {
-        dom.inviteNote.textContent = `Комментарий к приглашению: ${state.inviteInfo.note}`;
+        dom.inviteNote.textContent = `${UI.inviteNotePrefix}${state.inviteInfo.note}`;
         dom.inviteNote.classList.remove('hidden');
     } else {
         dom.inviteNote.classList.add('hidden');
@@ -164,7 +244,7 @@ function renderCurrentUser() {
         <div class="profile-name">${escapeHtml(state.currentUser.display_name)}</div>
         <div class="profile-row">
             <span>@${escapeHtml(state.currentUser.username)}</span>
-            <span>${state.currentUser.is_online ? 'online' : 'idle'}</span>
+            <span>${state.currentUser.is_online ? UI.online : UI.idle}</span>
         </div>
     `;
 }
@@ -172,13 +252,13 @@ function renderCurrentUser() {
 function renderUsers() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Войдите по приглашению, чтобы увидеть список.';
+        dom.usersList.textContent = UI.signInFirst;
         return;
     }
 
     if (state.users.length === 0) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Другие участники появятся здесь после входа.';
+        dom.usersList.textContent = UI.noUsers;
         return;
     }
 
@@ -204,27 +284,25 @@ function renderUsers() {
 function renderConversations() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'Диалоги появятся после входа.';
+        dom.conversationsList.textContent = UI.signInFirst;
         return;
     }
 
     if (state.conversations.length === 0) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'Откройте чат из списка людей слева.';
+        dom.conversationsList.textContent = UI.noConversations;
         return;
     }
 
     dom.conversationsList.className = 'stack-list';
-    dom.conversationsList.innerHTML = '';
-
-    state.conversations.forEach((conversation) => {
+    dom.conversationsList.innerHTML = '';    state.conversations.forEach((conversation) => {
         const button = document.createElement('button');
         button.type = 'button';
         const isActive = state.activeConversation && state.activeConversation.id === conversation.id;
         button.className = `conversation-item${isActive ? ' active' : ''}`;
         const preview = conversation.last_message
             ? escapeHtml(conversation.last_message.body.slice(0, 58))
-            : 'Новый диалог без сообщений';
+            : UI.newConversation;
         button.innerHTML = `
             <span class="conversation-main">
                 <span class="conversation-name">${escapeHtml(conversation.peer.display_name)}</span>
@@ -246,33 +324,33 @@ function renderChatHeader() {
     dom.sendMessageButton.disabled = !canInteract;
 
     if (!activeConversation) {
-        dom.chatHeader.querySelector('h2').textContent = 'Сообщения';
-        dom.chatHeader.querySelector('.eyebrow').textContent = 'выберите диалог';
+        dom.chatHeader.querySelector('h2').textContent = '\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F';
+        dom.chatHeader.querySelector('.eyebrow').textContent = UI.headerChoose;
         return;
     }
 
     dom.chatHeader.querySelector('h2').textContent = activeConversation.peer.display_name;
     dom.chatHeader.querySelector('.eyebrow').textContent = activeConversation.peer.is_online
-        ? 'собеседник сейчас онлайн'
-        : 'собеседник сейчас офлайн';
+        ? UI.headerOnline
+        : UI.headerOffline;
 }
 
 function renderMessages() {
     if (!state.currentUser) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Войдите по приглашению, чтобы начать общение.';
+        dom.messagesPanel.textContent = UI.signInFirst;
         return;
     }
 
     if (!state.activeConversation) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Выберите человека слева, чтобы открыть чат и начать звонок.';
+        dom.messagesPanel.textContent = UI.noConversationSelected;
         return;
     }
 
     if (state.messages.length === 0) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Пока нет сообщений. Начните разговор первым.';
+        dom.messagesPanel.textContent = UI.noMessages;
         return;
     }
 
@@ -300,25 +378,24 @@ function renderMessages() {
 
 function renderCallPanel() {
     const peerName = state.activeConversation?.peer.display_name || 'Contact';
-
     const labelMap = {
-        idle: 'Звонок ещё не начат.',
-        calling: `Звоним ${peerName}...`,
-        ringing: `${peerName} звонит вам.`,
-        connecting: `Подключаем звонок с ${peerName}...`,
-        in_call_audio: `Аудиозвонок с ${peerName} активен.`,
-        in_call_video: `Видеозвонок с ${peerName} активен.`,
-        ended: 'Звонок завершён.',
-        failed: 'Не удалось установить звонок.',
+        idle: UI.callIdle,
+        calling: `\u0417\u0432\u043E\u043D\u0438\u043C ${peerName}...`,
+        ringing: `${peerName} \u0437\u0432\u043E\u043D\u0438\u0442 \u0432\u0430\u043C.`,
+        connecting: `\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u0435\u043C \u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName}...`,
+        in_call_audio: `\u0410\u0443\u0434\u0438\u043E\u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName} \u0430\u043A\u0442\u0438\u0432\u0435\u043D.`,
+        in_call_video: `\u0412\u0438\u0434\u0435\u043E\u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName} \u0430\u043A\u0442\u0438\u0432\u0435\u043D.`,
+        ended: UI.callEnded,
+        failed: UI.callFailed
     };
 
-    dom.callStateText.textContent = labelMap[state.callState] || 'Звонок ещё не начат.';
+    dom.callStateText.textContent = labelMap[state.callState] || UI.callIdle;
     const inCall = ['calling', 'connecting', 'in_call_audio', 'in_call_video', 'ringing'].includes(state.callState);
     dom.hangupButton.disabled = !inCall;
     dom.muteButton.disabled = !state.localStream;
     dom.cameraButton.disabled = !state.localStream || state.currentCall?.mode !== 'video';
-    dom.muteButton.textContent = state.isMuted ? 'Включить микрофон' : 'Микрофон';
-    dom.cameraButton.textContent = state.isCameraEnabled ? 'Камера' : 'Включить камеру';
+    dom.muteButton.textContent = state.isMuted ? UI.unmuteLabel : UI.muteLabel;
+    dom.cameraButton.textContent = state.isCameraEnabled ? UI.cameraLabel : UI.cameraOnLabel;
 }
 
 function renderIncomingCall() {
@@ -328,9 +405,95 @@ function renderIncomingCall() {
     }
 
     dom.incomingCallModal.classList.remove('hidden');
-    const modeText = state.incomingOffer.payload.mode === 'video' ? 'видеозвонок' : 'аудиозвонок';
-    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} звонит`;
-    dom.incomingCallText.textContent = `Входящий ${modeText}. Принять?`;
+    const modeText = state.incomingOffer.payload.mode === 'video' ? UI.incomingVideo : UI.incomingAudio;
+    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} \u0437\u0432\u043E\u043D\u0438\u0442`;
+    dom.incomingCallText.textContent = `\u0412\u0445\u043E\u0434\u044F\u0449\u0438\u0439 ${modeText}. \u041F\u0440\u0438\u043D\u044F\u0442\u044C?`;
+}
+
+function renderAdminInvites() {
+    if (!state.adminKey) {
+        dom.adminInvitesList.className = 'stack-list empty-list';
+        dom.adminInvitesList.textContent = UI.adminNeedKey;
+        return;
+    }
+
+    if (state.adminLoading) {
+        dom.adminInvitesList.className = 'stack-list empty-list';
+        dom.adminInvitesList.textContent = UI.adminLoading;
+        return;
+    }
+
+    if (state.adminInvites.length === 0) {
+        dom.adminInvitesList.className = 'stack-list empty-list';
+        dom.adminInvitesList.textContent = UI.adminEmpty;
+        return;
+    }
+
+    dom.adminInvitesList.className = 'stack-list';
+    dom.adminInvitesList.innerHTML = '';
+
+    state.adminInvites.forEach((invite) => {
+        const fragment = dom.inviteRowTemplate.content.cloneNode(true);
+        const root = fragment.querySelector('.invite-item');
+        const title = fragment.querySelector('.invite-item-title');
+        const meta = fragment.querySelector('.invite-item-meta');
+        const link = fragment.querySelector('.invite-item-link');
+        const status = fragment.querySelector('.invite-item-status');
+        const copyButton = fragment.querySelector('.copy-invite-button');
+        const revokeButton = fragment.querySelector('.revoke-invite-button');
+
+        title.textContent = invite.note || (invite.assigned_username ? `@${invite.assigned_username}` : 'Invite');
+
+        const metaParts = [];
+        if (invite.assigned_username) {
+            metaParts.push(`@${invite.assigned_username}`);
+        }
+        metaParts.push(invite.last_used_at ? `${UI.inviteLastUsedPrefix}${formatDateTime(invite.last_used_at)}` : UI.inviteNeverUsed);
+        meta.textContent = metaParts.join(' · ');
+
+        link.textContent = invite.link;
+        root.dataset.token = invite.token;
+        copyButton.dataset.link = invite.link;
+        revokeButton.dataset.token = invite.token;
+
+        if (invite.revoked_at) {
+            status.textContent = UI.inviteRevoked;
+            status.className = 'status-pill offline';
+            revokeButton.disabled = true;
+        } else if (invite.is_claimed) {
+            status.textContent = UI.inviteUsed;
+            status.className = 'status-pill claimed';
+        } else {
+            status.textContent = UI.inviteActive;
+            status.className = 'status-pill online';
+        }
+
+        copyButton.addEventListener('click', () => copyText(invite.link));
+        revokeButton.addEventListener('click', () => revokeInvite(invite.token));
+        dom.adminInvitesList.appendChild(fragment);
+    });
+}
+
+function renderAdminPanel() {
+    const hasAdmin = Boolean(state.adminKey);
+    dom.adminLogoutButton.classList.toggle('hidden', !hasAdmin);
+    dom.adminWorkspace.classList.toggle('hidden', !hasAdmin);
+
+    if (!hasAdmin) {
+        setAdminStatus(state.adminError || UI.adminNeedKey, Boolean(state.adminError));
+        renderAdminInvites();
+        return;
+    }
+
+    if (state.adminLoading) {
+        setAdminStatus(UI.adminLoading);
+    } else if (state.adminError) {
+        setAdminStatus(state.adminError, true);
+    } else {
+        setAdminStatus(UI.adminReady);
+    }
+
+    renderAdminInvites();
 }
 
 function render() {
@@ -342,7 +505,9 @@ function render() {
     renderMessages();
     renderCallPanel();
     renderIncomingCall();
+    renderAdminPanel();
 }
+
 async function api(action, options = {}) {
     const method = options.method ?? 'GET';
     const includeInvite = options.includeInvite !== false;
@@ -361,7 +526,7 @@ async function api(action, options = {}) {
     let url = `${SIGNAL_API}?action=${encodeURIComponent(action)}`;
     const fetchOptions = {
         method,
-        headers: {},
+        headers: {}
     };
 
     if (method === 'GET') {
@@ -425,9 +590,7 @@ function persistSession(user) {
 
 function clearStoredUser() {
     localStorage.removeItem(USER_STORAGE_KEY);
-}
-
-function adoptInviteToken(token) {
+}function adoptInviteToken(token) {
     const normalizedToken = normalizeInviteToken(token);
     const previousToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
 
@@ -441,6 +604,23 @@ function adoptInviteToken(token) {
         localStorage.setItem(INVITE_STORAGE_KEY, state.inviteToken);
     } else {
         localStorage.removeItem(INVITE_STORAGE_KEY);
+    }
+}
+
+function loadAdminKeyFromStorage() {
+    const storedKey = localStorage.getItem(ADMIN_STORAGE_KEY);
+    if (storedKey) {
+        state.adminKey = storedKey;
+        dom.adminKeyInput.value = storedKey;
+    }
+}
+
+async function copyText(value) {
+    try {
+        await navigator.clipboard.writeText(value);
+        setAdminStatus(UI.adminCopyDone);
+    } catch {
+        setAdminStatus(value);
     }
 }
 
@@ -459,7 +639,7 @@ async function loadInviteStatus() {
         const result = await api('invite_status', {
             method: 'GET',
             payload: { invite_token: state.inviteToken },
-            includeInvite: false,
+            includeInvite: false
         });
 
         state.inviteInfo = result.invite;
@@ -472,6 +652,34 @@ async function loadInviteStatus() {
     }
 
     render();
+}
+
+async function loadAdminInvites() {
+    if (!state.adminKey) {
+        render();
+        return;
+    }
+
+    state.adminLoading = true;
+    state.adminError = '';
+    render();
+
+    try {
+        const result = await api('admin_invites', {
+            method: 'GET',
+            payload: { admin_key: state.adminKey },
+            includeInvite: false
+        });
+        state.adminInvites = result.invites;
+    } catch (error) {
+        state.adminInvites = [];
+        state.adminError = error.message;
+        localStorage.removeItem(ADMIN_STORAGE_KEY);
+        state.adminKey = null;
+    } finally {
+        state.adminLoading = false;
+        render();
+    }
 }
 
 async function syncState() {
@@ -487,8 +695,8 @@ async function syncState() {
             payload: {
                 user_id: state.currentUser.id,
                 conversation_id: state.activeConversation?.id || 0,
-                after_message_id: state.activeConversation ? state.lastMessageId : 0,
-            },
+                after_message_id: state.activeConversation ? state.lastMessageId : 0
+            }
         });
 
         state.currentUser = result.current_user;
@@ -536,7 +744,7 @@ async function loginUser(event) {
     event.preventDefault();
 
     if (!state.inviteInfo) {
-        setAuthHint('Сначала откройте рабочую invite-ссылку.', true);
+        setAuthHint(UI.needInviteHint, true);
         return;
     }
 
@@ -544,9 +752,7 @@ async function loginUser(event) {
         const username = dom.usernameInput.value.trim();
         const result = await api('login', {
             method: 'POST',
-            payload: {
-                username,
-            },
+            payload: { username }
         });
 
         state.currentUser = result.user;
@@ -554,7 +760,7 @@ async function loginUser(event) {
         state.messages = [];
         state.lastMessageId = 0;
         persistSession(result.user);
-        setAuthHint('Вход выполнен. Теперь можно открыть диалог.');
+        setAuthHint(UI.loggedInHint);
         render();
         startSyncLoop();
     } catch (error) {
@@ -581,6 +787,81 @@ async function restoreSession() {
     }
 }
 
+async function handleAdminLogin(event) {
+    event.preventDefault();
+
+    const key = dom.adminKeyInput.value.trim();
+    if (!key) {
+        setAdminStatus(UI.adminNeedKey, true);
+        return;
+    }
+
+    state.adminKey = key;
+    localStorage.setItem(ADMIN_STORAGE_KEY, key);
+    await loadAdminInvites();
+}
+
+function handleAdminLogout() {
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+    state.adminKey = null;
+    state.adminInvites = [];
+    state.adminError = '';
+    dom.adminKeyInput.value = '';
+    render();
+}
+
+async function handleCreateInvite(event) {
+    event.preventDefault();
+
+    if (!state.adminKey) {
+        setAdminStatus(UI.adminNeedKey, true);
+        return;
+    }
+
+    try {
+        const result = await api('admin_create_invite', {
+            method: 'POST',
+            payload: {
+                admin_key: state.adminKey,
+                note: dom.inviteNoteInput.value.trim()
+            },
+            includeInvite: false
+        });
+
+        state.adminInvites = result.invites;
+        dom.inviteNoteInput.value = '';
+        render();
+        await copyText(result.invite.link);
+        setAdminStatus(`${UI.adminCreatedPrefix}${result.invite.link}`);
+    } catch (error) {
+        setAdminStatus(error.message, true);
+    }
+}
+
+async function revokeInvite(token) {
+    if (!state.adminKey) {
+        setAdminStatus(UI.adminNeedKey, true);
+        return;
+    }
+
+    try {
+        const result = await api('admin_revoke_invite', {
+            method: 'POST',
+            payload: {
+                admin_key: state.adminKey,
+                invite_token: token
+            },
+            includeInvite: false
+        });
+
+        state.adminInvites = result.invites;
+        setAdminStatus(UI.adminRevoked);
+        render();
+    } catch (error) {
+        setAdminStatus(error.message, true);
+    }
+}
+
 async function openConversationWithUser(peerUserId) {
     if (!state.currentUser) {
         return;
@@ -591,8 +872,8 @@ async function openConversationWithUser(peerUserId) {
             method: 'POST',
             payload: {
                 user_id: state.currentUser.id,
-                peer_user_id: peerUserId,
-            },
+                peer_user_id: peerUserId
+            }
         });
 
         state.activeConversation = result.conversation;
@@ -636,8 +917,8 @@ async function handleSendMessage(event) {
             payload: {
                 user_id: state.currentUser.id,
                 conversation_id: state.activeConversation.id,
-                body,
-            },
+                body
+            }
         });
 
         dom.messageInput.value = '';
@@ -671,14 +952,13 @@ function attachStreams() {
 async function acquireLocalStream(mode) {
     const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: mode === 'video',
+        video: mode === 'video'
     });
     state.localStream = stream;
     state.isMuted = false;
     state.isCameraEnabled = mode === 'video';
     attachStreams();
-}
-function cleanupCall(notifyPeer = false, nextState = 'ended') {
+}function cleanupCall(notifyPeer = false, nextState = 'ended') {
     const currentCall = state.currentCall;
 
     if (notifyPeer && currentCall && state.currentUser) {
@@ -689,8 +969,8 @@ function cleanupCall(notifyPeer = false, nextState = 'ended') {
                 conversation_id: currentCall.conversationId,
                 recipient_id: currentCall.peerUserId,
                 type: 'call-hangup',
-                payload: { mode: currentCall.mode },
-            },
+                payload: { mode: currentCall.mode }
+            }
         }).catch(() => undefined);
     }
 
@@ -753,8 +1033,8 @@ async function createPeerConnection(call) {
                 conversation_id: call.conversationId,
                 recipient_id: call.peerUserId,
                 type: 'ice-candidate',
-                payload: { candidate: event.candidate.toJSON() },
-            },
+                payload: { candidate: event.candidate.toJSON() }
+            }
         }).catch(() => undefined);
     };
 
@@ -800,12 +1080,12 @@ async function startCall(mode) {
             conversationId: state.activeConversation.id,
             peerUserId: state.activeConversation.peer.id,
             mode,
-            direction: 'outgoing',
+            direction: 'outgoing'
         };
         const peerConnection = await createPeerConnection(call);
         const offer = await peerConnection.createOffer({
             offerToReceiveAudio: true,
-            offerToReceiveVideo: mode === 'video',
+            offerToReceiveVideo: mode === 'video'
         });
         await peerConnection.setLocalDescription(offer);
 
@@ -821,13 +1101,13 @@ async function startCall(mode) {
                 type: 'call-offer',
                 payload: {
                     mode,
-                    description: peerConnection.localDescription.toJSON(),
-                },
-            },
+                    description: peerConnection.localDescription.toJSON()
+                }
+            }
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Не удалось начать звонок: ${error.message}`, true);
+        setAuthHint(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0447\u0430\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A: ${error.message}`, true);
     }
 }
 
@@ -854,7 +1134,7 @@ async function acceptIncomingCall() {
             conversationId: offer.conversation_id,
             peerUserId: offer.sender_id,
             mode: offer.payload.mode,
-            direction: 'incoming',
+            direction: 'incoming'
         };
 
         const peerConnection = await createPeerConnection(call);
@@ -876,13 +1156,13 @@ async function acceptIncomingCall() {
                 type: 'call-answer',
                 payload: {
                     mode: offer.payload.mode,
-                    description: peerConnection.localDescription.toJSON(),
-                },
-            },
+                    description: peerConnection.localDescription.toJSON()
+                }
+            }
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Не удалось принять звонок: ${error.message}`, true);
+        setAuthHint(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043F\u0440\u0438\u043D\u044F\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A: ${error.message}`, true);
     }
 }
 
@@ -904,8 +1184,8 @@ async function declineIncomingCall() {
                 conversation_id: offer.conversation_id,
                 recipient_id: offer.sender_id,
                 type: 'call-decline',
-                payload: { mode: offer.payload.mode },
-            },
+                payload: { mode: offer.payload.mode }
+            }
         });
     } catch (error) {
         setAuthHint(error.message, true);
@@ -923,8 +1203,8 @@ async function processSignals(signals) {
                         conversation_id: signal.conversation_id,
                         recipient_id: signal.sender_id,
                         type: 'call-busy',
-                        payload: { mode: signal.payload.mode },
-                    },
+                        payload: { mode: signal.payload.mode }
+                    }
                 });
                 continue;
             }
@@ -986,6 +1266,7 @@ function toggleCamera() {
     });
     render();
 }
+
 function hydrateInviteToken() {
     const urlToken = normalizeInviteToken(new URLSearchParams(window.location.search).get('invite'));
     const storedToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
@@ -1002,9 +1283,11 @@ function hydrateInviteToken() {
 
 async function initialize() {
     hydrateInviteToken();
+    loadAdminKeyFromStorage();
     render();
     await loadInviteStatus();
     await restoreSession();
+    await loadAdminInvites();
 }
 
 dom.loginForm.addEventListener('submit', loginUser);
@@ -1016,6 +1299,9 @@ dom.declineCallButton.addEventListener('click', declineIncomingCall);
 dom.hangupButton.addEventListener('click', () => cleanupCall(true));
 dom.muteButton.addEventListener('click', toggleMute);
 dom.cameraButton.addEventListener('click', toggleCamera);
+dom.adminLoginForm.addEventListener('submit', handleAdminLogin);
+dom.adminLogoutButton.addEventListener('click', handleAdminLogout);
+dom.createInviteForm.addEventListener('submit', handleCreateInvite);
 window.addEventListener('beforeunload', () => cleanupCall(true));
 
 initialize();
