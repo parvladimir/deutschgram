@@ -1,4 +1,7 @@
 const state = {
+    inviteToken: null,
+    inviteInfo: null,
+    inviteError: '',
     currentUser: null,
     users: [],
     conversations: [],
@@ -20,9 +23,12 @@ const state = {
 
 const dom = {
     loginForm: document.getElementById('loginForm'),
-    displayNameInput: document.getElementById('displayNameInput'),
     usernameInput: document.getElementById('usernameInput'),
+    openMessengerButton: document.getElementById('openMessengerButton'),
     authHint: document.getElementById('authHint'),
+    inviteBadge: document.getElementById('inviteBadge'),
+    inviteStatusText: document.getElementById('inviteStatusText'),
+    inviteNote: document.getElementById('inviteNote'),
     currentUserCard: document.getElementById('currentUserCard'),
     usersList: document.getElementById('usersList'),
     conversationsList: document.getElementById('conversationsList'),
@@ -47,7 +53,8 @@ const dom = {
     messageTemplate: document.getElementById('messageTemplate'),
 };
 
-const STORAGE_KEY = 'deutschgram-user-id';
+const USER_STORAGE_KEY = 'deutschgram-user-id';
+const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
 const SIGNAL_API = 'api/index.php';
 const rtcConfig = {
     iceServers: [
@@ -56,33 +63,17 @@ const rtcConfig = {
     ],
 };
 
-async function api(action, options = {}) {
-    const method = options.method ?? 'GET';
-    const payload = options.payload ?? null;
-    let url = `${SIGNAL_API}?action=${encodeURIComponent(action)}`;
-    const fetchOptions = {
-        method,
-        headers: {},
-    };
+function normalizeInviteToken(value) {
+    return String(value || '').trim().toLowerCase().replace(/[^a-f0-9]+/g, '');
+}
 
-    if (method === 'GET' && payload) {
-        const search = new URLSearchParams(payload);
-        url += `&${search.toString()}`;
-    }
-
-    if (method !== 'GET') {
-        fetchOptions.headers['Content-Type'] = 'application/json';
-        fetchOptions.body = JSON.stringify({ action, ...(payload || {}) });
-    }
-
-    const response = await fetch(url, fetchOptions);
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Request failed');
-    }
-
-    return result;
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
 }
 
 function formatTime(dateString) {
@@ -97,13 +88,66 @@ function relativePresence(user) {
     return user.is_online ? 'online' : 'offline';
 }
 
-function findConversationById(conversationId) {
-    return state.conversations.find((conversation) => conversation.id === conversationId) || null;
-}
-
 function setAuthHint(message, isError = false) {
     dom.authHint.textContent = message;
     dom.authHint.style.color = isError ? '#ffb9ae' : '';
+}
+
+function setInviteBadge(label, mode) {
+    dom.inviteBadge.textContent = label;
+    dom.inviteBadge.className = `invite-badge invite-badge-${mode}`;
+}
+
+function updateInviteState() {
+    const hasValidInvite = Boolean(state.inviteInfo && !state.inviteError);
+    const claimedUsername = state.inviteInfo?.assigned_username || '';
+
+    if (!state.inviteToken) {
+        setInviteBadge('Нет invite-ссылки', 'pending');
+        dom.inviteStatusText.textContent = 'Откройте сайт по персональной ссылке с параметром invite, чтобы разблокировать вход.';
+        dom.inviteNote.classList.add('hidden');
+        dom.openMessengerButton.disabled = true;
+        dom.usernameInput.readOnly = false;
+        return;
+    }
+
+    if (state.inviteError) {
+        setInviteBadge('Invite недоступен', 'pending');
+        dom.inviteStatusText.textContent = state.inviteError;
+        dom.inviteNote.classList.add('hidden');
+        dom.openMessengerButton.disabled = true;
+        dom.usernameInput.readOnly = false;
+        return;
+    }
+
+    if (!state.inviteInfo) {
+        setInviteBadge('Проверяем invite...', 'pending');
+        dom.inviteStatusText.textContent = 'Проверяю приглашение и подготавливаю вход...';
+        dom.inviteNote.classList.add('hidden');
+        dom.openMessengerButton.disabled = true;
+        dom.usernameInput.readOnly = false;
+        return;
+    }
+
+    if (claimedUsername) {
+        setInviteBadge('Приглашение закреплено', 'claimed');
+        dom.inviteStatusText.textContent = `Эта ссылка уже закреплена за @${claimedUsername}. Войти можно только под этим именем.`;
+        dom.usernameInput.value = claimedUsername;
+        dom.usernameInput.readOnly = true;
+    } else {
+        setInviteBadge('Приглашение активно', 'ready');
+        dom.inviteStatusText.textContent = 'Ссылка активна. Введите имя пользователя и оно закрепится за этим приглашением.';
+        dom.usernameInput.readOnly = false;
+    }
+
+    if (state.inviteInfo.note) {
+        dom.inviteNote.textContent = `Комментарий к приглашению: ${state.inviteInfo.note}`;
+        dom.inviteNote.classList.remove('hidden');
+    } else {
+        dom.inviteNote.classList.add('hidden');
+    }
+
+    dom.openMessengerButton.disabled = !hasValidInvite;
 }
 
 function renderCurrentUser() {
@@ -128,13 +172,13 @@ function renderCurrentUser() {
 function renderUsers() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Sign in first.';
+        dom.usersList.textContent = 'Войдите по приглашению, чтобы увидеть список.';
         return;
     }
 
     if (state.users.length === 0) {
         dom.usersList.className = 'stack-list empty-list';
-        dom.usersList.textContent = 'Other people will appear here after they open the site.';
+        dom.usersList.textContent = 'Другие участники появятся здесь после входа.';
         return;
     }
 
@@ -160,13 +204,13 @@ function renderUsers() {
 function renderConversations() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'Chats will appear after sign in.';
+        dom.conversationsList.textContent = 'Диалоги появятся после входа.';
         return;
     }
 
     if (state.conversations.length === 0) {
         dom.conversationsList.className = 'stack-list empty-list';
-        dom.conversationsList.textContent = 'Open a chat from the people list.';
+        dom.conversationsList.textContent = 'Откройте чат из списка людей слева.';
         return;
     }
 
@@ -180,7 +224,7 @@ function renderConversations() {
         button.className = `conversation-item${isActive ? ' active' : ''}`;
         const preview = conversation.last_message
             ? escapeHtml(conversation.last_message.body.slice(0, 58))
-            : 'New chat without messages';
+            : 'Новый диалог без сообщений';
         button.innerHTML = `
             <span class="conversation-main">
                 <span class="conversation-name">${escapeHtml(conversation.peer.display_name)}</span>
@@ -202,27 +246,33 @@ function renderChatHeader() {
     dom.sendMessageButton.disabled = !canInteract;
 
     if (!activeConversation) {
-        dom.chatHeader.querySelector('h2').textContent = 'Messages';
-        dom.chatHeader.querySelector('.eyebrow').textContent = 'choose a chat';
+        dom.chatHeader.querySelector('h2').textContent = 'Сообщения';
+        dom.chatHeader.querySelector('.eyebrow').textContent = 'выберите диалог';
         return;
     }
 
     dom.chatHeader.querySelector('h2').textContent = activeConversation.peer.display_name;
     dom.chatHeader.querySelector('.eyebrow').textContent = activeConversation.peer.is_online
-        ? 'person is online now'
-        : 'person is offline now';
+        ? 'собеседник сейчас онлайн'
+        : 'собеседник сейчас офлайн';
 }
 
 function renderMessages() {
+    if (!state.currentUser) {
+        dom.messagesPanel.className = 'panel messages-panel empty-state';
+        dom.messagesPanel.textContent = 'Войдите по приглашению, чтобы начать общение.';
+        return;
+    }
+
     if (!state.activeConversation) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'Choose a person on the left to open chat and start a call.';
+        dom.messagesPanel.textContent = 'Выберите человека слева, чтобы открыть чат и начать звонок.';
         return;
     }
 
     if (state.messages.length === 0) {
         dom.messagesPanel.className = 'panel messages-panel empty-state';
-        dom.messagesPanel.textContent = 'No messages yet. Start the conversation first.';
+        dom.messagesPanel.textContent = 'Пока нет сообщений. Начните разговор первым.';
         return;
     }
 
@@ -238,7 +288,7 @@ function renderMessages() {
         const meta = fragment.querySelector('.message-meta');
         const body = fragment.querySelector('.message-body');
         bubble.classList.toggle('own', message.is_from_current_user);
-        meta.textContent = `${message.sender_display_name} • ${formatTime(message.created_at)}`;
+        meta.textContent = `${message.sender_display_name} - ${formatTime(message.created_at)}`;
         body.textContent = message.body;
         dom.messagesPanel.appendChild(fragment);
     });
@@ -252,23 +302,23 @@ function renderCallPanel() {
     const peerName = state.activeConversation?.peer.display_name || 'Contact';
 
     const labelMap = {
-        idle: 'Call has not started yet.',
-        calling: `Calling ${peerName}...`,
-        ringing: `${peerName} is calling you.`,
-        connecting: `Connecting to ${peerName}...`,
-        in_call_audio: `Audio call with ${peerName} is active.`,
-        in_call_video: `Video call with ${peerName} is active.`,
-        ended: 'Call ended.',
-        failed: 'Could not connect the call.',
+        idle: 'Звонок ещё не начат.',
+        calling: `Звоним ${peerName}...`,
+        ringing: `${peerName} звонит вам.`,
+        connecting: `Подключаем звонок с ${peerName}...`,
+        in_call_audio: `Аудиозвонок с ${peerName} активен.`,
+        in_call_video: `Видеозвонок с ${peerName} активен.`,
+        ended: 'Звонок завершён.',
+        failed: 'Не удалось установить звонок.',
     };
 
-    dom.callStateText.textContent = labelMap[state.callState] || 'Call has not started yet.';
+    dom.callStateText.textContent = labelMap[state.callState] || 'Звонок ещё не начат.';
     const inCall = ['calling', 'connecting', 'in_call_audio', 'in_call_video', 'ringing'].includes(state.callState);
     dom.hangupButton.disabled = !inCall;
     dom.muteButton.disabled = !state.localStream;
     dom.cameraButton.disabled = !state.localStream || state.currentCall?.mode !== 'video';
-    dom.muteButton.textContent = state.isMuted ? 'Unmute mic' : 'Mic';
-    dom.cameraButton.textContent = state.isCameraEnabled ? 'Camera' : 'Turn camera on';
+    dom.muteButton.textContent = state.isMuted ? 'Включить микрофон' : 'Микрофон';
+    dom.cameraButton.textContent = state.isCameraEnabled ? 'Камера' : 'Включить камеру';
 }
 
 function renderIncomingCall() {
@@ -278,12 +328,13 @@ function renderIncomingCall() {
     }
 
     dom.incomingCallModal.classList.remove('hidden');
-    const modeText = state.incomingOffer.payload.mode === 'video' ? 'video call' : 'audio call';
-    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} is calling`;
-    dom.incomingCallText.textContent = `Incoming ${modeText}. Accept?`;
+    const modeText = state.incomingOffer.payload.mode === 'video' ? 'видеозвонок' : 'аудиозвонок';
+    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} звонит`;
+    dom.incomingCallText.textContent = `Входящий ${modeText}. Принять?`;
 }
 
 function render() {
+    updateInviteState();
     renderCurrentUser();
     renderUsers();
     renderConversations();
@@ -291,6 +342,50 @@ function render() {
     renderMessages();
     renderCallPanel();
     renderIncomingCall();
+}
+async function api(action, options = {}) {
+    const method = options.method ?? 'GET';
+    const includeInvite = options.includeInvite !== false;
+    const payload = { ...(options.payload || {}) };
+
+    if (includeInvite) {
+        if (!state.inviteToken) {
+            throw new Error('Open the site from an invite link first.');
+        }
+
+        if (!('invite_token' in payload)) {
+            payload.invite_token = state.inviteToken;
+        }
+    }
+
+    let url = `${SIGNAL_API}?action=${encodeURIComponent(action)}`;
+    const fetchOptions = {
+        method,
+        headers: {},
+    };
+
+    if (method === 'GET') {
+        const search = new URLSearchParams(payload);
+        if (search.toString()) {
+            url += `&${search.toString()}`;
+        }
+    } else {
+        fetchOptions.headers['Content-Type'] = 'application/json';
+        fetchOptions.body = JSON.stringify({ action, ...payload });
+    }
+
+    const response = await fetch(url, fetchOptions);
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Request failed');
+    }
+
+    return result;
+}
+
+function findConversationById(conversationId) {
+    return state.conversations.find((conversation) => conversation.id === conversationId) || null;
 }
 
 function mergeConversations(nextConversations) {
@@ -319,6 +414,64 @@ function upsertMessages(messages) {
     nextMessages.sort((left, right) => left.id - right.id);
     state.messages = nextMessages;
     state.lastMessageId = nextMessages.length > 0 ? nextMessages[nextMessages.length - 1].id : 0;
+}
+
+function persistSession(user) {
+    localStorage.setItem(USER_STORAGE_KEY, String(user.id));
+    if (state.inviteToken) {
+        localStorage.setItem(INVITE_STORAGE_KEY, state.inviteToken);
+    }
+}
+
+function clearStoredUser() {
+    localStorage.removeItem(USER_STORAGE_KEY);
+}
+
+function adoptInviteToken(token) {
+    const normalizedToken = normalizeInviteToken(token);
+    const previousToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
+
+    if (normalizedToken && previousToken && normalizedToken !== previousToken) {
+        clearStoredUser();
+    }
+
+    state.inviteToken = normalizedToken || null;
+
+    if (state.inviteToken) {
+        localStorage.setItem(INVITE_STORAGE_KEY, state.inviteToken);
+    } else {
+        localStorage.removeItem(INVITE_STORAGE_KEY);
+    }
+}
+
+async function loadInviteStatus() {
+    if (!state.inviteToken) {
+        state.inviteInfo = null;
+        state.inviteError = '';
+        render();
+        return;
+    }
+
+    state.inviteError = '';
+    render();
+
+    try {
+        const result = await api('invite_status', {
+            method: 'GET',
+            payload: { invite_token: state.inviteToken },
+            includeInvite: false,
+        });
+
+        state.inviteInfo = result.invite;
+        if (state.inviteInfo.assigned_username && !state.currentUser) {
+            dom.usernameInput.value = state.inviteInfo.assigned_username;
+        }
+    } catch (error) {
+        state.inviteInfo = null;
+        state.inviteError = error.message;
+    }
+
+    render();
 }
 
 async function syncState() {
@@ -357,6 +510,10 @@ async function syncState() {
         render();
     } catch (error) {
         setAuthHint(error.message, true);
+        clearStoredUser();
+        state.currentUser = null;
+        stopSyncLoop();
+        render();
     } finally {
         state.syncInFlight = false;
     }
@@ -375,26 +532,29 @@ function stopSyncLoop() {
     }
 }
 
-async function registerUser(event) {
+async function loginUser(event) {
     event.preventDefault();
 
-    try {
-        const displayName = dom.displayNameInput.value.trim();
-        const username = dom.usernameInput.value.trim() || displayName;
+    if (!state.inviteInfo) {
+        setAuthHint('Сначала откройте рабочую invite-ссылку.', true);
+        return;
+    }
 
-        const result = await api('register', {
+    try {
+        const username = dom.usernameInput.value.trim();
+        const result = await api('login', {
             method: 'POST',
             payload: {
-                display_name: displayName,
                 username,
             },
         });
 
         state.currentUser = result.user;
-        localStorage.setItem(STORAGE_KEY, String(result.user.id));
+        state.inviteInfo = result.invite;
         state.messages = [];
         state.lastMessageId = 0;
-        setAuthHint('Profile saved. You can open a chat now.');
+        persistSession(result.user);
+        setAuthHint('Вход выполнен. Теперь можно открыть диалог.');
         render();
         startSyncLoop();
     } catch (error) {
@@ -403,8 +563,8 @@ async function registerUser(event) {
 }
 
 async function restoreSession() {
-    const rawUserId = localStorage.getItem(STORAGE_KEY);
-    if (!rawUserId) {
+    const rawUserId = localStorage.getItem(USER_STORAGE_KEY);
+    if (!rawUserId || !state.inviteToken) {
         render();
         return;
     }
@@ -415,7 +575,7 @@ async function restoreSession() {
         await syncState();
         startSyncLoop();
     } catch {
-        localStorage.removeItem(STORAGE_KEY);
+        clearStoredUser();
         state.currentUser = null;
         render();
     }
@@ -518,7 +678,6 @@ async function acquireLocalStream(mode) {
     state.isCameraEnabled = mode === 'video';
     attachStreams();
 }
-
 function cleanupCall(notifyPeer = false, nextState = 'ended') {
     const currentCall = state.currentCall;
 
@@ -668,7 +827,7 @@ async function startCall(mode) {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Could not start call: ${error.message}`, true);
+        setAuthHint(`Не удалось начать звонок: ${error.message}`, true);
     }
 }
 
@@ -723,7 +882,7 @@ async function acceptIncomingCall() {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Could not accept call: ${error.message}`, true);
+        setAuthHint(`Не удалось принять звонок: ${error.message}`, true);
     }
 }
 
@@ -827,17 +986,28 @@ function toggleCamera() {
     });
     render();
 }
+function hydrateInviteToken() {
+    const urlToken = normalizeInviteToken(new URLSearchParams(window.location.search).get('invite'));
+    const storedToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
 
-function escapeHtml(value) {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+    if (urlToken) {
+        adoptInviteToken(urlToken);
+        return;
+    }
+
+    if (storedToken) {
+        state.inviteToken = storedToken;
+    }
 }
 
-dom.loginForm.addEventListener('submit', registerUser);
+async function initialize() {
+    hydrateInviteToken();
+    render();
+    await loadInviteStatus();
+    await restoreSession();
+}
+
+dom.loginForm.addEventListener('submit', loginUser);
 dom.messageForm.addEventListener('submit', handleSendMessage);
 dom.audioCallButton.addEventListener('click', () => startCall('audio'));
 dom.videoCallButton.addEventListener('click', () => startCall('video'));
@@ -848,5 +1018,4 @@ dom.muteButton.addEventListener('click', toggleMute);
 dom.cameraButton.addEventListener('click', toggleCamera);
 window.addEventListener('beforeunload', () => cleanupCall(true));
 
-render();
-restoreSession();
+initialize();

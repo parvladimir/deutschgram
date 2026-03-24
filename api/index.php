@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/chat.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -18,16 +20,27 @@ try {
     $data = requestData();
 
     switch ($action) {
+        case 'invite_status':
+            requireMethod('GET');
+            jsonResponse([
+                'ok' => true,
+                'invite' => getInviteStatus((string) ($data['invite_token'] ?? '')),
+            ]);
+            break;
+
+        case 'login':
         case 'register':
             requireMethod('POST');
 
-            $displayName = (string) ($data['display_name'] ?? '');
-            $username = (string) ($data['username'] ?? $displayName);
-            $user = registerUser($username, $displayName);
+            $user = loginWithInvite(
+                (string) ($data['invite_token'] ?? ''),
+                (string) ($data['username'] ?? $data['display_name'] ?? '')
+            );
 
             jsonResponse([
                 'ok' => true,
                 'user' => serializeUser($user, (int) $user['id']),
+                'invite' => getInviteStatus((string) ($data['invite_token'] ?? '')),
             ]);
             break;
 
@@ -35,7 +48,7 @@ try {
             requireMethod('GET');
 
             $userId = (int) ($data['user_id'] ?? 0);
-            requireUser($userId);
+            authorizeInviteSession($userId, (string) ($data['invite_token'] ?? ''));
             touchPresence($userId);
             $currentUser = requireUser($userId);
 
@@ -68,7 +81,7 @@ try {
 
             $userId = (int) ($data['user_id'] ?? 0);
             $peerUserId = (int) ($data['peer_user_id'] ?? 0);
-            requireUser($userId);
+            authorizeInviteSession($userId, (string) ($data['invite_token'] ?? ''));
             touchPresence($userId);
 
             jsonResponse([
@@ -82,7 +95,7 @@ try {
 
             $userId = (int) ($data['user_id'] ?? 0);
             $conversationId = (int) ($data['conversation_id'] ?? 0);
-            requireUser($userId);
+            authorizeInviteSession($userId, (string) ($data['invite_token'] ?? ''));
             touchPresence($userId);
 
             $message = sendMessage($conversationId, $userId, (string) ($data['body'] ?? ''));
@@ -103,7 +116,7 @@ try {
             $recipientId = (int) ($data['recipient_id'] ?? 0);
             $type = (string) ($data['type'] ?? '');
             $payload = is_array($data['payload'] ?? null) ? $data['payload'] : [];
-            requireUser($userId);
+            authorizeInviteSession($userId, (string) ($data['invite_token'] ?? ''));
             touchPresence($userId);
             sendSignal($conversationId, $userId, $recipientId, $type, $payload);
 
@@ -113,6 +126,11 @@ try {
         default:
             fail('Unknown API action.', 404);
     }
+} catch (HttpException $exception) {
+    jsonResponse([
+        'ok' => false,
+        'error' => $exception->getMessage(),
+    ], $exception->statusCode());
 } catch (Throwable $exception) {
     jsonResponse([
         'ok' => false,

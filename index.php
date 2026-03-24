@@ -20,28 +20,37 @@ declare(strict_types=1);
                 <p class="eyebrow">private family line</p>
                 <h1>Deutschgram Call</h1>
                 <p class="brand-copy">
-                    Лёгкий веб-мессенджер для семьи: сообщения, голос и видео прямо в браузере.
+                    Закрытый семейный веб-мессенджер: личные сообщения, аудио и видеозвонки прямо в браузере.
                 </p>
             </div>
 
-            <form id="loginForm" class="panel auth-panel">
+            <section class="panel invite-panel">
+                <div class="panel-heading compact-heading">
+                    <h2>Доступ по приглашениям</h2>
+                    <p>Главная страница открыта всем, но вход пока работает только по персональной invite-ссылке.</p>
+                </div>
+                <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидается invite-ссылка</div>
+                <p id="inviteStatusText" class="helper-text">
+                    Откройте сайт по специальной ссылке вида <code>?invite=...</code>, чтобы войти.
+                </p>
+                <p id="inviteNote" class="invite-note hidden"></p>
+            </section>
+
+            <form id="loginForm" class="panel auth-panel" autocomplete="off">
                 <div class="panel-heading">
                     <h2>Войти</h2>
-                    <p>Введите имя, под которым вас увидят близкие.</p>
+                    <p>Введите имя пользователя. Оно закрепится за этой invite-ссылкой.</p>
                 </div>
 
                 <label class="field">
-                    <span>Отображаемое имя</span>
-                    <input type="text" id="displayNameInput" name="display_name" maxlength="60" placeholder="Например, Мама" required>
+                    <span>Имя пользователя</span>
+                    <input type="text" id="usernameInput" name="username" maxlength="80" placeholder="Например, mama" required>
                 </label>
 
-                <label class="field">
-                    <span>Короткий ник</span>
-                    <input type="text" id="usernameInput" name="username" maxlength="60" placeholder="mama">
-                </label>
-
-                <button type="submit" class="primary-button wide-button">Открыть мессенджер</button>
-                <p id="authHint" class="helper-text">Паролей пока нет: это быстрый MVP для своих.</p>
+                <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>
+                    Открыть мессенджер
+                </button>
+                <p id="authHint" class="helper-text">Вход доступен только после открытия сайта по приглашению.</p>
             </form>
 
             <section id="currentUserCard" class="panel profile-panel hidden"></section>
@@ -52,14 +61,14 @@ declare(strict_types=1);
                     <p>Кто уже появился в приложении</p>
                 </div>
                 <div id="usersList" class="stack-list empty-list">
-                    Никто ещё не вошёл.
+                    Список появится после входа.
                 </div>
             </section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
                     <h2>Диалоги</h2>
-                    <p>Последние сообщения и непрочитанное</p>
+                    <p>Личные переписки и непрочитанные сообщения</p>
                 </div>
                 <div id="conversationsList" class="stack-list empty-list">
                     Пока нет диалогов.
@@ -80,7 +89,7 @@ declare(strict_types=1);
             </header>
 
             <section id="messagesPanel" class="panel messages-panel empty-state">
-                Выберите человека слева, чтобы открыть чат и позвонить.
+                Войдите по приглашению и выберите человека слева, чтобы начать переписку или звонок.
             </section>
 
             <form id="messageForm" class="panel composer" autocomplete="off">
@@ -115,7 +124,7 @@ declare(strict_types=1);
                 </div>
 
                 <p class="helper-text">
-                    Для звонков используется WebRTC. В браузере нужно разрешить доступ к камере и микрофону.
+                    Для звонков используется WebRTC. В браузере нужно разрешить доступ к микрофону и камере.
                 </p>
             </section>
 
@@ -124,6 +133,7 @@ declare(strict_types=1);
                     <h2>Что уже есть</h2>
                 </div>
                 <ul class="notes-list">
+                    <li>Вход по invite-ссылке и имени пользователя.</li>
                     <li>Личные диалоги один на один.</li>
                     <li>Текстовые сообщения с автосинхронизацией.</li>
                     <li>Аудио- и видеозвонки из браузера.</li>
