@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+
+$usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] : '';
 ?><!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -19,143 +21,117 @@ declare(strict_types=1);
             <div class="brand-card">
                 <p class="eyebrow">private family line</p>
                 <h1>Deutschgram Call</h1>
-                <p class="brand-copy">Пока вход только по приглашениям.</p>
+                <p class="brand-copy">Access is currently invite-only.</p>
             </div>
-
-            <section class="panel admin-panel">
-                <div class="panel-heading compact-heading">
-                    <h2>Админка</h2>
-                    <p>Создавайте приглашения и копируйте готовые ссылки прямо отсюда.</p>
-                </div>
-
-                <form id="adminLoginForm" class="admin-login" autocomplete="off">
-                    <label class="field">
-                        <span>Ключ администратора</span>
-                        <input type="password" id="adminKeyInput" maxlength="120" placeholder="Введите admin key">
-                    </label>
-                    <div class="inline-actions">
-                        <button type="submit" class="secondary-button">Открыть админку</button>
-                        <button type="button" id="adminLogoutButton" class="secondary-button hidden">Выйти</button>
-                    </div>
-                </form>
-
-                <p id="adminStatusText" class="helper-text">Введите ключ администратора, чтобы управлять приглашениями.</p>
-
-                <div id="adminWorkspace" class="hidden admin-workspace">
-                    <form id="createInviteForm" class="admin-create-form" autocomplete="off">
-                        <label class="field">
-                            <span>Имя для приглашения</span>
-                            <input type="text" id="inviteNoteInput" maxlength="255" placeholder="Например, Mama">
-                        </label>
-                        <button type="submit" id="createInviteButton" class="primary-button wide-button">Создать ссылку</button>
-                    </form>
-
-                    <div class="panel-heading compact-heading admin-list-heading">
-                        <h2>Приглашения</h2>
-                        <p>Можно копировать ссылки и отзывать старые приглашения.</p>
-                    </div>
-                    <div id="adminInvitesList" class="stack-list empty-list">Приглашения появятся здесь после входа в админку.</div>
-                </div>
-            </section>
 
             <form id="loginForm" class="panel auth-panel" autocomplete="off">
                 <div class="panel-heading compact-heading">
-                    <h2>Вход</h2>
-                    <p>Пока только по приглашениям.</p>
+                    <h2>Sign in</h2>
+                    <p>First sign-in happens via invite. After that, a personal link like <code>/mama</code> also works.</p>
                 </div>
 
-                <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидается приглашение</div>
-                <p id="inviteStatusText" class="helper-text">Откройте сайт по invite-ссылке, чтобы войти.</p>
+                <div id="inviteBadge" class="invite-badge invite-badge-pending">Waiting for invite</div>
+                <p id="inviteStatusText" class="helper-text">Open the site from an invite link to sign in.</p>
+                <p id="routeHint" class="helper-text hidden"></p>
                 <p id="inviteNote" class="invite-note hidden"></p>
 
                 <label class="field">
-                    <span>Имя пользователя</span>
-                    <input type="text" id="usernameInput" name="username" maxlength="80" placeholder="Например, mama" required>
+                    <span>Username</span>
+                    <input type="text" id="usernameInput" name="username" maxlength="80" placeholder="For example, mama" required>
                 </label>
 
-                <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>Открыть мессенджер</button>
-                <p id="authHint" class="helper-text">Сначала откройте рабочую invite-ссылку.</p>
+                <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>Open messenger</button>
+                <p id="authHint" class="helper-text">Open a working invite link first.</p>
             </form>
+
+            <section class="panel notification-panel">
+                <div class="panel-heading compact-heading">
+                    <h2>Notifications</h2>
+                    <p>Turn them on to see new messages and incoming calls when the tab is in the background.</p>
+                </div>
+                <button type="button" id="notificationButton" class="secondary-button wide-button">Enable notifications</button>
+                <p id="notificationText" class="helper-text">Browser permission is not enabled yet.</p>
+            </section>
 
             <section id="currentUserCard" class="panel profile-panel hidden"></section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Люди</h2>
-                    <p>Кто уже в приложении</p>
+                    <h2>People</h2>
+                    <p>Who is already inside the app</p>
                 </div>
-                <div id="usersList" class="stack-list empty-list">Список появится после входа.</div>
+                <div id="usersList" class="stack-list empty-list">The people list will appear after sign-in.</div>
             </section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Диалоги</h2>
-                    <p>Личные переписки</p>
+                    <h2>Dialogs</h2>
+                    <p>Private one-to-one chats</p>
                 </div>
-                <div id="conversationsList" class="stack-list empty-list">Пока нет диалогов.</div>
+                <div id="conversationsList" class="stack-list empty-list">There are no dialogs yet.</div>
             </section>
         </aside>
 
         <main class="chat-panel">
             <header id="chatHeader" class="panel chat-header">
                 <div>
-                    <p class="eyebrow">выберите диалог</p>
-                    <h2>Сообщения</h2>
+                    <p class="eyebrow">choose a dialog</p>
+                    <h2>Messages</h2>
                 </div>
                 <div class="header-actions">
-                    <button id="audioCallButton" class="secondary-button" type="button" disabled>Аудио</button>
-                    <button id="videoCallButton" class="primary-button" type="button" disabled>Видео</button>
+                    <button id="audioCallButton" class="secondary-button" type="button" disabled>Audio</button>
+                    <button id="videoCallButton" class="primary-button" type="button" disabled>Video</button>
                 </div>
             </header>
 
             <section id="messagesPanel" class="panel messages-panel empty-state">
-                Выберите человека слева, чтобы начать чат или звонок.
+                Choose a person on the left to start chatting or calling.
             </section>
 
             <form id="messageForm" class="panel composer" autocomplete="off">
-                <textarea id="messageInput" rows="2" maxlength="4000" placeholder="Напишите сообщение..." disabled></textarea>
-                <button type="submit" class="primary-button" disabled id="sendMessageButton">Отправить</button>
+                <textarea id="messageInput" rows="2" maxlength="4000" placeholder="Write a message..." disabled></textarea>
+                <button type="submit" class="primary-button" disabled id="sendMessageButton">Send</button>
             </form>
         </main>
 
         <aside class="call-panel">
             <section class="panel call-status-panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Звонок</h2>
-                    <p id="callStateText">Звонок ещё не начат.</p>
+                    <h2>Call</h2>
+                    <p id="callStateText">Call has not started yet.</p>
                 </div>
 
                 <div class="media-stack">
                     <div class="video-card">
-                        <span>Собственное видео</span>
+                        <span>Your video</span>
                         <video id="localVideo" autoplay playsinline muted></video>
                     </div>
 
                     <div class="video-card featured">
-                        <span>Собеседник</span>
+                        <span>Remote video</span>
                         <video id="remoteVideo" autoplay playsinline></video>
                     </div>
                 </div>
 
                 <div class="call-actions-grid">
-                    <button id="muteButton" class="secondary-button" type="button" disabled>Микрофон</button>
-                    <button id="cameraButton" class="secondary-button" type="button" disabled>Камера</button>
-                    <button id="hangupButton" class="danger-button" type="button" disabled>Завершить</button>
+                    <button id="muteButton" class="secondary-button" type="button" disabled>Microphone</button>
+                    <button id="cameraButton" class="secondary-button" type="button" disabled>Camera</button>
+                    <button id="hangupButton" class="danger-button" type="button" disabled>End call</button>
                 </div>
 
-                <p class="helper-text">Для звонков используется WebRTC. В браузере нужно разрешить доступ к микрофону и камере.</p>
+                <p class="helper-text">Calls use WebRTC. The browser must be allowed to use the microphone and camera.</p>
             </section>
         </aside>
     </div>
 
     <div id="incomingCallModal" class="modal hidden" aria-live="polite">
         <div class="modal-card">
-            <p class="eyebrow">входящий звонок</p>
-            <h2 id="incomingCallTitle">Кто-то звонит</h2>
-            <p id="incomingCallText">Принять звонок?</p>
+            <p class="eyebrow">incoming call</p>
+            <h2 id="incomingCallTitle">Someone is calling</h2>
+            <p id="incomingCallText">Accept the call?</p>
             <div class="modal-actions">
-                <button id="declineCallButton" class="secondary-button" type="button">Отклонить</button>
-                <button id="acceptCallButton" class="primary-button" type="button">Принять</button>
+                <button id="declineCallButton" class="secondary-button" type="button">Decline</button>
+                <button id="acceptCallButton" class="primary-button" type="button">Accept</button>
             </div>
         </div>
     </div>
@@ -167,23 +143,12 @@ declare(strict_types=1);
         </article>
     </template>
 
-    <template id="inviteRowTemplate">
-        <article class="invite-item">
-            <div class="invite-item-head">
-                <div>
-                    <div class="invite-item-title"></div>
-                    <div class="invite-item-meta"></div>
-                </div>
-                <span class="status-pill invite-item-status"></span>
-            </div>
-            <div class="invite-item-link"></div>
-            <div class="invite-item-actions">
-                <button type="button" class="secondary-button copy-invite-button">Скопировать</button>
-                <button type="button" class="danger-button revoke-invite-button">Отозвать</button>
-            </div>
-        </article>
-    </template>
-
+    <script>
+        window.DEUTSCHGRAM_CONFIG = <?php echo json_encode([
+            'usernamePath' => $usernamePath,
+            'serviceWorker' => 'service-worker.js',
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+    </script>
     <script src="assets/app.js" defer></script>
 </body>
 </html>

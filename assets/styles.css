@@ -580,3 +580,57 @@ video {
         grid-template-columns: 1fr;
     }
 }
+.admin-shell {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 20px;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.notification-panel {
+    display: grid;
+    gap: 12px;
+}
+
+.profile-link-row {
+    display: grid;
+    gap: 6px;
+    font-size: 0.92rem;
+    color: var(--text-soft);
+}
+
+.profile-link-row a,
+.back-link {
+    color: var(--accent-soft);
+    text-decoration: none;
+}
+
+.link-stack {
+    display: grid;
+    gap: 10px;
+}
+
+.invite-link-block {
+    display: grid;
+    gap: 6px;
+}
+
+.back-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+code {
+    font-family: Consolas, 'Courier New', monospace;
+    color: var(--accent-soft);
+}
+
+@media (max-width: 1180px) {
+    .admin-shell {
+        grid-template-columns: 1fr;
+    }
+}

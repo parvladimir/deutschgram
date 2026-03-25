@@ -1,56 +1,76 @@
-const UI = {
-    online: '\u043E\u043D\u043B\u0430\u0439\u043D',
-    offline: '\u043E\u0444\u043B\u0430\u0439\u043D',
-    idle: '\u043D\u0435 \u0432 \u0441\u0435\u0442\u0438',
-    noInviteBadge: '\u041D\u0435\u0442 invite-\u0441\u0441\u044B\u043B\u043A\u0438',
-    invitePendingBadge: '\u041F\u0440\u043E\u0432\u0435\u0440\u044F\u0435\u043C invite...',
-    inviteReadyBadge: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0430\u043A\u0442\u0438\u0432\u043D\u043E',
-    inviteClaimedBadge: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0437\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u043E',
-    inviteErrorBadge: 'Invite \u043D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u0435\u043D',
-    noInviteText: '\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0441\u0430\u0439\u0442 \u043F\u043E invite-\u0441\u0441\u044B\u043B\u043A\u0435, \u0447\u0442\u043E\u0431\u044B \u0432\u043E\u0439\u0442\u0438.',
-    inviteLoadingText: '\u041F\u0440\u043E\u0432\u0435\u0440\u044F\u044E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435...',
-    inviteClaimedTextPrefix: '\u042D\u0442\u0430 \u0441\u0441\u044B\u043B\u043A\u0430 \u0443\u0436\u0435 \u0437\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u0430 \u0437\u0430 ',
-    inviteClaimedTextSuffix: '. \u0412\u043E\u0439\u0442\u0438 \u043C\u043E\u0436\u043D\u043E \u0442\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434 \u044D\u0442\u0438\u043C \u0438\u043C\u0435\u043D\u0435\u043C.',
-    inviteReadyText: '\u0421\u0441\u044B\u043B\u043A\u0430 \u0430\u043A\u0442\u0438\u0432\u043D\u0430. \u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0438\u043C\u044F \u0438 \u0432\u043E\u0439\u0434\u0438\u0442\u0435.',
-    inviteNotePrefix: '\u0418\u043C\u044F \u0434\u043B\u044F \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F: ',
-    signInFirst: '\u0412\u043E\u0439\u0434\u0438\u0442\u0435 \u043F\u043E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044E.',
-    noUsers: '\u0414\u0440\u0443\u0433\u0438\u0435 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0438 \u043F\u043E\u044F\u0432\u044F\u0442\u0441\u044F \u0437\u0434\u0435\u0441\u044C \u043F\u043E\u0441\u043B\u0435 \u0432\u0445\u043E\u0434\u0430.',
-    noConversations: '\u041E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0447\u0430\u0442 \u0438\u0437 \u0441\u043F\u0438\u0441\u043A\u0430 \u043B\u044E\u0434\u0435\u0439.',
-    newConversation: '\u041D\u043E\u0432\u044B\u0439 \u0434\u0438\u0430\u043B\u043E\u0433 \u0431\u0435\u0437 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0439',
-    headerChoose: '\u0432\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0434\u0438\u0430\u043B\u043E\u0433',
-    headerOnline: '\u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A \u0441\u0435\u0439\u0447\u0430\u0441 \u043E\u043D\u043B\u0430\u0439\u043D',
-    headerOffline: '\u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A \u0441\u0435\u0439\u0447\u0430\u0441 \u043E\u0444\u043B\u0430\u0439\u043D',
-    noConversationSelected: '\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0447\u0435\u043B\u043E\u0432\u0435\u043A\u0430 \u0441\u043B\u0435\u0432\u0430, \u0447\u0442\u043E\u0431\u044B \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0447\u0430\u0442 \u0438 \u043D\u0430\u0447\u0430\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A.',
-    noMessages: '\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0439. \u041D\u0430\u0447\u043D\u0438\u0442\u0435 \u0440\u0430\u0437\u0433\u043E\u0432\u043E\u0440 \u043F\u0435\u0440\u0432\u044B\u043C.',
-    loggedInHint: '\u0412\u0445\u043E\u0434 \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D. \u0422\u0435\u043F\u0435\u0440\u044C \u043C\u043E\u0436\u043D\u043E \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0434\u0438\u0430\u043B\u043E\u0433.',
-    needInviteHint: '\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u043E\u0442\u043A\u0440\u043E\u0439\u0442\u0435 \u0440\u0430\u0431\u043E\u0447\u0443\u044E invite-\u0441\u0441\u044B\u043B\u043A\u0443.',
-    adminNeedKey: '\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043A\u043B\u044E\u0447 \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430, \u0447\u0442\u043E\u0431\u044B \u0443\u043F\u0440\u0430\u0432\u043B\u044F\u0442\u044C \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F\u043C\u0438.',
-    adminLoading: '\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u044E \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u044F...',
-    adminReady: '\u0410\u0434\u043C\u0438\u043D\u043A\u0430 \u0433\u043E\u0442\u043E\u0432\u0430. \u041C\u043E\u0436\u043D\u043E \u0441\u043E\u0437\u0434\u0430\u0432\u0430\u0442\u044C \u043D\u043E\u0432\u044B\u0435 invite-\u0441\u0441\u044B\u043B\u043A\u0438.',
-    adminEmpty: '\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u043F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0439.',
-    adminCopyDone: '\u0421\u0441\u044B\u043B\u043A\u0430 \u0441\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u0430.',
-    adminCreatedPrefix: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u0441\u043E\u0437\u0434\u0430\u043D\u043E: ',
-    adminRevoked: '\u041F\u0440\u0438\u0433\u043B\u0430\u0448\u0435\u043D\u0438\u0435 \u043E\u0442\u043E\u0437\u0432\u0430\u043D\u043E.',
-    inviteActive: '\u0410\u043A\u0442\u0438\u0432\u043D\u043E',
-    inviteUsed: '\u0417\u0430\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u043E',
-    inviteRevoked: '\u041E\u0442\u043E\u0437\u0432\u0430\u043D\u043E',
-    inviteNeverUsed: '\u0435\u0449\u0435 \u043D\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u043E',
-    inviteLastUsedPrefix: '\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0432\u0445\u043E\u0434: ',
-    callIdle: '\u0417\u0432\u043E\u043D\u043E\u043A \u0435\u0449\u0435 \u043D\u0435 \u043D\u0430\u0447\u0430\u0442.',
-    callEnded: '\u0417\u0432\u043E\u043D\u043E\u043A \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D.',
-    callFailed: '\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A.',
-    incomingAudio: '\u0430\u0443\u0434\u0438\u043E\u0437\u0432\u043E\u043D\u043E\u043A',
-    incomingVideo: '\u0432\u0438\u0434\u0435\u043E\u0437\u0432\u043E\u043D\u043E\u043A',
-    muteLabel: '\u041C\u0438\u043A\u0440\u043E\u0444\u043E\u043D',
-    unmuteLabel: '\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D',
-    cameraLabel: '\u041A\u0430\u043C\u0435\u0440\u0430',
-    cameraOnLabel: '\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u043A\u0430\u043C\u0435\u0440\u0443'
+﻿const UI = {
+    online: 'online',
+    offline: 'offline',
+    idle: 'away',
+    noInviteBadge: 'Invite required',
+    invitePendingBadge: 'Checking invite...',
+    inviteReadyBadge: 'Invite active',
+    inviteClaimedBadge: 'Invite linked',
+    pathBadge: 'Personal link',
+    inviteErrorBadge: 'Link error',
+    noInviteText: 'Open the site from an invite link to sign in.',
+    inviteLoadingText: 'Checking invite...',
+    inviteClaimedTextPrefix: 'This invite already belongs to @',
+    inviteClaimedTextSuffix: '. Sign in only with this username.',
+    inviteReadyText: 'Invite is active. Enter a username and sign in.',
+    inviteNotePrefix: 'Invite note: ',
+    pathReadyPrefix: 'Personal sign-in link detected: /',
+    pathReadySuffix: '. Auto sign-in will start now. If needed, you can also press the button below.',
+    signInFirst: 'Sign in first to see people and dialogs.',
+    noUsers: 'Other people will appear here after they sign in.',
+    noConversations: 'Open a chat from the people list.',
+    newConversation: 'New dialog without messages yet',
+    headerChoose: 'choose a dialog',
+    headerOnline: 'person is online now',
+    headerOffline: 'person is offline now',
+    noConversationSelected: 'Choose a person on the left to open the chat and start a call.',
+    noMessages: 'There are no messages yet. Start the conversation first.',
+    loggedInHint: 'You are signed in. Open a dialog to continue.',
+    pathLoggedInHint: 'You are signed in via your personal link.',
+    needInviteHint: 'Open a working invite link first.',
+    pathMismatchHint: 'This personal link only works with its own username.',
+    profileEyebrow: 'your profile',
+    personalLinkLabel: 'personal link',
+    notificationDefault: 'Browser permission is not enabled yet.',
+    notificationGranted: 'Notifications are enabled for messages and calls while the tab is in the background.',
+    notificationDenied: 'Browser notifications are blocked. Allow them in the browser settings.',
+    notificationUnsupported: 'This browser does not support notifications.',
+    notificationButtonDefault: 'Enable notifications',
+    notificationButtonGranted: 'Notifications enabled',
+    notificationButtonDenied: 'Notifications blocked',
+    callIdle: 'Call has not started yet.',
+    callEnded: 'Call ended.',
+    callFailed: 'Could not connect the call.',
+    incomingAudio: 'audio call',
+    incomingVideo: 'video call',
+    muteLabel: 'Microphone',
+    unmuteLabel: 'Unmute',
+    cameraLabel: 'Camera',
+    cameraOnLabel: 'Enable camera',
+    newMessageTitle: 'New message',
+    incomingCallTitleSuffix: 'is calling',
+    incomingCallBodyAudio: 'Incoming audio call. Open Deutschgram to answer.',
+    incomingCallBodyVideo: 'Incoming video call. Open Deutschgram to answer.'
+};
+
+const config = window.DEUTSCHGRAM_CONFIG || {};
+const USER_STORAGE_KEY = 'deutschgram-user-id';
+const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
+const SIGNAL_API = 'api/index.php';
+const SYNC_INTERVAL_MS = 1200;
+
+const rtcConfig = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+    ]
 };
 
 const state = {
     inviteToken: null,
     inviteInfo: null,
     inviteError: '',
+    usernamePath: normalizePathUsername(config.usernamePath || ''),
     currentUser: null,
     users: [],
     conversations: [],
@@ -59,6 +79,11 @@ const state = {
     syncTimer: null,
     syncInFlight: false,
     lastMessageId: 0,
+    lastConversationMessageIds: new Map(),
+    notificationsPrimed: false,
+    serviceWorkerRegistration: null,
+    titleFlashTimer: null,
+    defaultTitle: document.title,
     peerConnection: null,
     localStream: null,
     remoteStream: null,
@@ -67,11 +92,7 @@ const state = {
     currentCall: null,
     incomingOffer: null,
     isMuted: false,
-    isCameraEnabled: true,
-    adminKey: null,
-    adminInvites: [],
-    adminLoading: false,
-    adminError: ''
+    isCameraEnabled: true
 };
 
 const dom = {
@@ -81,7 +102,10 @@ const dom = {
     authHint: document.getElementById('authHint'),
     inviteBadge: document.getElementById('inviteBadge'),
     inviteStatusText: document.getElementById('inviteStatusText'),
+    routeHint: document.getElementById('routeHint'),
     inviteNote: document.getElementById('inviteNote'),
+    notificationButton: document.getElementById('notificationButton'),
+    notificationText: document.getElementById('notificationText'),
     currentUserCard: document.getElementById('currentUserCard'),
     usersList: document.getElementById('usersList'),
     conversationsList: document.getElementById('conversationsList'),
@@ -103,32 +127,15 @@ const dom = {
     incomingCallText: document.getElementById('incomingCallText'),
     acceptCallButton: document.getElementById('acceptCallButton'),
     declineCallButton: document.getElementById('declineCallButton'),
-    messageTemplate: document.getElementById('messageTemplate'),
-    inviteRowTemplate: document.getElementById('inviteRowTemplate'),
-    adminLoginForm: document.getElementById('adminLoginForm'),
-    adminKeyInput: document.getElementById('adminKeyInput'),
-    adminLogoutButton: document.getElementById('adminLogoutButton'),
-    adminStatusText: document.getElementById('adminStatusText'),
-    adminWorkspace: document.getElementById('adminWorkspace'),
-    createInviteForm: document.getElementById('createInviteForm'),
-    inviteNoteInput: document.getElementById('inviteNoteInput'),
-    createInviteButton: document.getElementById('createInviteButton'),
-    adminInvitesList: document.getElementById('adminInvitesList')
-};
-
-const USER_STORAGE_KEY = 'deutschgram-user-id';
-const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
-const ADMIN_STORAGE_KEY = 'deutschgram-admin-key';
-const SIGNAL_API = 'api/index.php';
-const rtcConfig = {
-    iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
-    ]
+    messageTemplate: document.getElementById('messageTemplate')
 };
 
 function normalizeInviteToken(value) {
     return String(value || '').trim().toLowerCase().replace(/[^a-f0-9]+/g, '');
+}
+
+function normalizePathUsername(value) {
+    return String(value || '').trim().replace(/^\/+|\/+$/g, '').toLowerCase();
 }
 
 function escapeHtml(value) {
@@ -141,12 +148,12 @@ function escapeHtml(value) {
 }
 
 function formatTime(dateString) {
-    const date = new Date(dateString.replace(' ', 'T') + 'Z');
+    const date = new Date(String(dateString).replace(' ', 'T') + 'Z');
     return new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(date);
 }
 
 function formatDateTime(dateString) {
-    const date = new Date(dateString.replace(' ', 'T') + 'Z');
+    const date = new Date(String(dateString).replace(' ', 'T') + 'Z');
     return new Intl.DateTimeFormat('ru-RU', {
         year: 'numeric',
         month: '2-digit',
@@ -160,14 +167,21 @@ function relativePresence(user) {
     return user.is_online ? UI.online : UI.offline;
 }
 
+function personalPathLink(user) {
+    if (user && user.path_link) {
+        return user.path_link;
+    }
+
+    if (user && user.username) {
+        return `${window.location.origin}${window.location.pathname.replace(/\/[^/]*$/, '')}/${encodeURIComponent(user.username)}`;
+    }
+
+    return '';
+}
+
 function setAuthHint(message, isError = false) {
     dom.authHint.textContent = message;
     dom.authHint.style.color = isError ? '#ffb9ae' : '';
-}
-
-function setAdminStatus(message, isError = false) {
-    dom.adminStatusText.textContent = message;
-    dom.adminStatusText.style.color = isError ? '#ffb9ae' : '';
 }
 
 function setInviteBadge(label, mode) {
@@ -175,9 +189,60 @@ function setInviteBadge(label, mode) {
     dom.inviteBadge.className = `invite-badge invite-badge-${mode}`;
 }
 
+function updateNotificationUI() {
+    if (!('Notification' in window)) {
+        dom.notificationButton.disabled = true;
+        dom.notificationButton.textContent = UI.notificationButtonDenied;
+        dom.notificationText.textContent = UI.notificationUnsupported;
+        return;
+    }
+
+    const permission = Notification.permission;
+    if (permission === 'granted') {
+        dom.notificationButton.disabled = true;
+        dom.notificationButton.textContent = UI.notificationButtonGranted;
+        dom.notificationText.textContent = UI.notificationGranted;
+        return;
+    }
+
+    if (permission === 'denied') {
+        dom.notificationButton.disabled = true;
+        dom.notificationButton.textContent = UI.notificationButtonDenied;
+        dom.notificationText.textContent = UI.notificationDenied;
+        return;
+    }
+
+    dom.notificationButton.disabled = false;
+    dom.notificationButton.textContent = UI.notificationButtonDefault;
+    dom.notificationText.textContent = UI.notificationDefault;
+}
+
 function updateInviteState() {
     const hasValidInvite = Boolean(state.inviteInfo && !state.inviteError);
-    const claimedUsername = state.inviteInfo?.assigned_username || '';
+    const claimedUsername = state.inviteInfo && state.inviteInfo.assigned_username ? state.inviteInfo.assigned_username : '';
+
+    dom.routeHint.classList.toggle('hidden', !state.usernamePath);
+    if (state.usernamePath) {
+        dom.routeHint.textContent = `${UI.pathReadyPrefix}${state.usernamePath}${UI.pathReadySuffix}`;
+    }
+
+    if (state.currentUser && state.currentUser.display_name) {
+        setInviteBadge(UI.pathBadge, 'claimed');
+        dom.inviteStatusText.textContent = state.usernamePath
+            ? `${UI.pathReadyPrefix}${state.usernamePath}`
+            : UI.loggedInHint;
+        dom.openMessengerButton.disabled = false;
+        return;
+    }
+
+    if (state.usernamePath && !state.inviteToken) {
+        setInviteBadge(UI.pathBadge, 'claimed');
+        dom.inviteStatusText.textContent = `${UI.pathReadyPrefix}${state.usernamePath}${UI.pathReadySuffix}`;
+        dom.usernameInput.value = state.usernamePath;
+        dom.usernameInput.readOnly = true;
+        dom.openMessengerButton.disabled = false;
+        return;
+    }
 
     if (!state.inviteToken) {
         setInviteBadge(UI.noInviteBadge, 'pending');
@@ -208,7 +273,7 @@ function updateInviteState() {
 
     if (claimedUsername) {
         setInviteBadge(UI.inviteClaimedBadge, 'claimed');
-        dom.inviteStatusText.textContent = `${UI.inviteClaimedTextPrefix}@${claimedUsername}${UI.inviteClaimedTextSuffix}`;
+        dom.inviteStatusText.textContent = `${UI.inviteClaimedTextPrefix}${claimedUsername}${UI.inviteClaimedTextSuffix}`;
         dom.usernameInput.value = claimedUsername;
         dom.usernameInput.readOnly = true;
     } else {
@@ -237,14 +302,20 @@ function renderCurrentUser() {
         return;
     }
 
+    const pathLink = personalPathLink(state.currentUser);
+
     dom.loginForm.classList.add('hidden');
     dom.currentUserCard.classList.remove('hidden');
     dom.currentUserCard.innerHTML = `
-        <div class="eyebrow">your profile</div>
+        <div class="eyebrow">${UI.profileEyebrow}</div>
         <div class="profile-name">${escapeHtml(state.currentUser.display_name)}</div>
         <div class="profile-row">
             <span>@${escapeHtml(state.currentUser.username)}</span>
             <span>${state.currentUser.is_online ? UI.online : UI.idle}</span>
+        </div>
+        <div class="profile-link-row">
+            <span>${UI.personalLinkLabel}</span>
+            <a href="${escapeHtml(pathLink)}">${escapeHtml(pathLink)}</a>
         </div>
     `;
 }
@@ -280,7 +351,6 @@ function renderUsers() {
         dom.usersList.appendChild(button);
     });
 }
-
 function renderConversations() {
     if (!state.currentUser || !state.currentUser.display_name) {
         dom.conversationsList.className = 'stack-list empty-list';
@@ -295,10 +365,12 @@ function renderConversations() {
     }
 
     dom.conversationsList.className = 'stack-list';
-    dom.conversationsList.innerHTML = '';    state.conversations.forEach((conversation) => {
+    dom.conversationsList.innerHTML = '';
+
+    state.conversations.forEach((conversation) => {
         const button = document.createElement('button');
         button.type = 'button';
-        const isActive = state.activeConversation && state.activeConversation.id === conversation.id;
+        const isActive = Boolean(state.activeConversation && state.activeConversation.id === conversation.id);
         button.className = `conversation-item${isActive ? ' active' : ''}`;
         const preview = conversation.last_message
             ? escapeHtml(conversation.last_message.body.slice(0, 58))
@@ -324,7 +396,7 @@ function renderChatHeader() {
     dom.sendMessageButton.disabled = !canInteract;
 
     if (!activeConversation) {
-        dom.chatHeader.querySelector('h2').textContent = '\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F';
+        dom.chatHeader.querySelector('h2').textContent = 'Messages';
         dom.chatHeader.querySelector('.eyebrow').textContent = UI.headerChoose;
         return;
     }
@@ -366,7 +438,7 @@ function renderMessages() {
         const meta = fragment.querySelector('.message-meta');
         const body = fragment.querySelector('.message-body');
         bubble.classList.toggle('own', message.is_from_current_user);
-        meta.textContent = `${message.sender_display_name} - ${formatTime(message.created_at)}`;
+        meta.textContent = `${message.sender_display_name} · ${formatTime(message.created_at)}`;
         body.textContent = message.body;
         dom.messagesPanel.appendChild(fragment);
     });
@@ -377,14 +449,14 @@ function renderMessages() {
 }
 
 function renderCallPanel() {
-    const peerName = state.activeConversation?.peer.display_name || 'Contact';
+    const peerName = state.activeConversation && state.activeConversation.peer ? state.activeConversation.peer.display_name : 'Contact';
     const labelMap = {
         idle: UI.callIdle,
-        calling: `\u0417\u0432\u043E\u043D\u0438\u043C ${peerName}...`,
-        ringing: `${peerName} \u0437\u0432\u043E\u043D\u0438\u0442 \u0432\u0430\u043C.`,
-        connecting: `\u041F\u043E\u0434\u043A\u043B\u044E\u0447\u0430\u0435\u043C \u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName}...`,
-        in_call_audio: `\u0410\u0443\u0434\u0438\u043E\u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName} \u0430\u043A\u0442\u0438\u0432\u0435\u043D.`,
-        in_call_video: `\u0412\u0438\u0434\u0435\u043E\u0437\u0432\u043E\u043D\u043E\u043A \u0441 ${peerName} \u0430\u043A\u0442\u0438\u0432\u0435\u043D.`,
+        calling: `Calling ${peerName}...`,
+        ringing: `${peerName} is calling you.`,
+        connecting: `Connecting the call with ${peerName}...`,
+        in_call_audio: `Audio call with ${peerName} is active.`,
+        in_call_video: `Video call with ${peerName} is active.`,
         ended: UI.callEnded,
         failed: UI.callFailed
     };
@@ -393,7 +465,7 @@ function renderCallPanel() {
     const inCall = ['calling', 'connecting', 'in_call_audio', 'in_call_video', 'ringing'].includes(state.callState);
     dom.hangupButton.disabled = !inCall;
     dom.muteButton.disabled = !state.localStream;
-    dom.cameraButton.disabled = !state.localStream || state.currentCall?.mode !== 'video';
+    dom.cameraButton.disabled = !state.localStream || !state.currentCall || state.currentCall.mode !== 'video';
     dom.muteButton.textContent = state.isMuted ? UI.unmuteLabel : UI.muteLabel;
     dom.cameraButton.textContent = state.isCameraEnabled ? UI.cameraLabel : UI.cameraOnLabel;
 }
@@ -406,98 +478,13 @@ function renderIncomingCall() {
 
     dom.incomingCallModal.classList.remove('hidden');
     const modeText = state.incomingOffer.payload.mode === 'video' ? UI.incomingVideo : UI.incomingAudio;
-    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} \u0437\u0432\u043E\u043D\u0438\u0442`;
-    dom.incomingCallText.textContent = `\u0412\u0445\u043E\u0434\u044F\u0449\u0438\u0439 ${modeText}. \u041F\u0440\u0438\u043D\u044F\u0442\u044C?`;
-}
-
-function renderAdminInvites() {
-    if (!state.adminKey) {
-        dom.adminInvitesList.className = 'stack-list empty-list';
-        dom.adminInvitesList.textContent = UI.adminNeedKey;
-        return;
-    }
-
-    if (state.adminLoading) {
-        dom.adminInvitesList.className = 'stack-list empty-list';
-        dom.adminInvitesList.textContent = UI.adminLoading;
-        return;
-    }
-
-    if (state.adminInvites.length === 0) {
-        dom.adminInvitesList.className = 'stack-list empty-list';
-        dom.adminInvitesList.textContent = UI.adminEmpty;
-        return;
-    }
-
-    dom.adminInvitesList.className = 'stack-list';
-    dom.adminInvitesList.innerHTML = '';
-
-    state.adminInvites.forEach((invite) => {
-        const fragment = dom.inviteRowTemplate.content.cloneNode(true);
-        const root = fragment.querySelector('.invite-item');
-        const title = fragment.querySelector('.invite-item-title');
-        const meta = fragment.querySelector('.invite-item-meta');
-        const link = fragment.querySelector('.invite-item-link');
-        const status = fragment.querySelector('.invite-item-status');
-        const copyButton = fragment.querySelector('.copy-invite-button');
-        const revokeButton = fragment.querySelector('.revoke-invite-button');
-
-        title.textContent = invite.note || (invite.assigned_username ? `@${invite.assigned_username}` : 'Invite');
-
-        const metaParts = [];
-        if (invite.assigned_username) {
-            metaParts.push(`@${invite.assigned_username}`);
-        }
-        metaParts.push(invite.last_used_at ? `${UI.inviteLastUsedPrefix}${formatDateTime(invite.last_used_at)}` : UI.inviteNeverUsed);
-        meta.textContent = metaParts.join(' · ');
-
-        link.textContent = invite.link;
-        root.dataset.token = invite.token;
-        copyButton.dataset.link = invite.link;
-        revokeButton.dataset.token = invite.token;
-
-        if (invite.revoked_at) {
-            status.textContent = UI.inviteRevoked;
-            status.className = 'status-pill offline';
-            revokeButton.disabled = true;
-        } else if (invite.is_claimed) {
-            status.textContent = UI.inviteUsed;
-            status.className = 'status-pill claimed';
-        } else {
-            status.textContent = UI.inviteActive;
-            status.className = 'status-pill online';
-        }
-
-        copyButton.addEventListener('click', () => copyText(invite.link));
-        revokeButton.addEventListener('click', () => revokeInvite(invite.token));
-        dom.adminInvitesList.appendChild(fragment);
-    });
-}
-
-function renderAdminPanel() {
-    const hasAdmin = Boolean(state.adminKey);
-    dom.adminLogoutButton.classList.toggle('hidden', !hasAdmin);
-    dom.adminWorkspace.classList.toggle('hidden', !hasAdmin);
-
-    if (!hasAdmin) {
-        setAdminStatus(state.adminError || UI.adminNeedKey, Boolean(state.adminError));
-        renderAdminInvites();
-        return;
-    }
-
-    if (state.adminLoading) {
-        setAdminStatus(UI.adminLoading);
-    } else if (state.adminError) {
-        setAdminStatus(state.adminError, true);
-    } else {
-        setAdminStatus(UI.adminReady);
-    }
-
-    renderAdminInvites();
+    dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} ${UI.incomingCallTitleSuffix}`;
+    dom.incomingCallText.textContent = `Incoming ${modeText}. Accept?`;
 }
 
 function render() {
     updateInviteState();
+    updateNotificationUI();
     renderCurrentUser();
     renderUsers();
     renderConversations();
@@ -505,20 +492,19 @@ function render() {
     renderMessages();
     renderCallPanel();
     renderIncomingCall();
-    renderAdminPanel();
 }
 
 async function api(action, options = {}) {
-    const method = options.method ?? 'GET';
+    const method = options.method || 'GET';
     const includeInvite = options.includeInvite !== false;
     const payload = { ...(options.payload || {}) };
 
     if (includeInvite) {
         if (!state.inviteToken) {
-            throw new Error('Open the site from an invite link first.');
+            throw new Error('Open the site from an invite link or personal link first.');
         }
 
-        if (!('invite_token' in payload)) {
+        if (!Object.prototype.hasOwnProperty.call(payload, 'invite_token')) {
             payload.invite_token = state.inviteToken;
         }
     }
@@ -564,7 +550,7 @@ function mergeConversations(nextConversations) {
 }
 
 function upsertMessages(messages) {
-    if (messages.length === 0) {
+    if (!messages || messages.length === 0) {
         return;
     }
 
@@ -590,7 +576,9 @@ function persistSession(user) {
 
 function clearStoredUser() {
     localStorage.removeItem(USER_STORAGE_KEY);
-}function adoptInviteToken(token) {
+}
+
+function adoptInviteToken(token) {
     const normalizedToken = normalizeInviteToken(token);
     const previousToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
 
@@ -607,21 +595,106 @@ function clearStoredUser() {
     }
 }
 
-function loadAdminKeyFromStorage() {
-    const storedKey = localStorage.getItem(ADMIN_STORAGE_KEY);
-    if (storedKey) {
-        state.adminKey = storedKey;
-        dom.adminKeyInput.value = storedKey;
+function flashTitle(message) {
+    if (!document.hidden || state.titleFlashTimer) {
+        return;
+    }
+
+    let flipped = false;
+    state.titleFlashTimer = window.setInterval(() => {
+        document.title = flipped ? state.defaultTitle : `${message} · ${state.defaultTitle}`;
+        flipped = !flipped;
+    }, 900);
+}
+
+function stopTitleFlash() {
+    if (state.titleFlashTimer) {
+        window.clearInterval(state.titleFlashTimer);
+        state.titleFlashTimer = null;
+    }
+    document.title = state.defaultTitle;
+}
+
+async function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) {
+        return;
+    }
+
+    try {
+        state.serviceWorkerRegistration = await navigator.serviceWorker.register(config.serviceWorker || 'service-worker.js');
+    } catch {
+        state.serviceWorkerRegistration = null;
     }
 }
 
-async function copyText(value) {
-    try {
-        await navigator.clipboard.writeText(value);
-        setAdminStatus(UI.adminCopyDone);
-    } catch {
-        setAdminStatus(value);
+async function showSystemNotification(title, body, options = {}) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+        return;
     }
+
+    const notificationOptions = {
+        body,
+        tag: options.tag || 'deutschgram',
+        renotify: true,
+        data: {
+            url: options.url || window.location.href
+        }
+    };
+
+    try {
+        if (state.serviceWorkerRegistration && typeof state.serviceWorkerRegistration.showNotification === 'function') {
+            await state.serviceWorkerRegistration.showNotification(title, notificationOptions);
+            return;
+        }
+
+        new Notification(title, notificationOptions);
+    } catch {
+    }
+}
+
+async function requestNotificationAccess() {
+    if (!('Notification' in window)) {
+        updateNotificationUI();
+        return;
+    }
+
+    await registerServiceWorker();
+    await Notification.requestPermission();
+    updateNotificationUI();
+}
+function rememberConversationActivity(nextConversations) {
+    const nextIds = new Set();
+
+    nextConversations.forEach((conversation) => {
+        const nextId = conversation.last_message ? conversation.last_message.id : 0;
+        const previousId = state.lastConversationMessageIds.get(conversation.id) || 0;
+        nextIds.add(conversation.id);
+
+        const shouldNotify = state.notificationsPrimed && nextId > previousId && conversation.last_message;
+        const fromOtherUser = shouldNotify && conversation.last_message.sender_id !== state.currentUser.id;
+        const isVisibleConversation = !document.hidden && state.activeConversation && state.activeConversation.id === conversation.id;
+
+        if (fromOtherUser && !isVisibleConversation) {
+            const preview = conversation.last_message.body.length > 100
+                ? `${conversation.last_message.body.slice(0, 97)}...`
+                : conversation.last_message.body;
+            showSystemNotification(conversation.peer.display_name, preview, {
+                tag: `message-${conversation.id}-${nextId}`,
+                url: personalPathLink(state.currentUser)
+            });
+            flashTitle(UI.newMessageTitle);
+        }
+
+        state.lastConversationMessageIds.set(conversation.id, nextId);
+    });
+
+    Array.from(state.lastConversationMessageIds.keys()).forEach((conversationId) => {
+        if (!nextIds.has(conversationId)) {
+            state.lastConversationMessageIds.delete(conversationId);
+        }
+    });
+
+    state.notificationsPrimed = true;
 }
 
 async function loadInviteStatus() {
@@ -654,34 +727,6 @@ async function loadInviteStatus() {
     render();
 }
 
-async function loadAdminInvites() {
-    if (!state.adminKey) {
-        render();
-        return;
-    }
-
-    state.adminLoading = true;
-    state.adminError = '';
-    render();
-
-    try {
-        const result = await api('admin_invites', {
-            method: 'GET',
-            payload: { admin_key: state.adminKey },
-            includeInvite: false
-        });
-        state.adminInvites = result.invites;
-    } catch (error) {
-        state.adminInvites = [];
-        state.adminError = error.message;
-        localStorage.removeItem(ADMIN_STORAGE_KEY);
-        state.adminKey = null;
-    } finally {
-        state.adminLoading = false;
-        render();
-    }
-}
-
 async function syncState() {
     if (!state.currentUser || state.syncInFlight) {
         return;
@@ -694,13 +739,14 @@ async function syncState() {
             method: 'GET',
             payload: {
                 user_id: state.currentUser.id,
-                conversation_id: state.activeConversation?.id || 0,
+                conversation_id: state.activeConversation ? state.activeConversation.id : 0,
                 after_message_id: state.activeConversation ? state.lastMessageId : 0
             }
         });
 
         state.currentUser = result.current_user;
         state.users = result.users;
+        rememberConversationActivity(result.conversations);
         mergeConversations(result.conversations);
 
         if (result.active_conversation) {
@@ -714,7 +760,7 @@ async function syncState() {
             state.lastMessageId = 0;
         }
 
-        await processSignals(result.signals);
+        await processSignals(result.signals || []);
         render();
     } catch (error) {
         setAuthHint(error.message, true);
@@ -730,7 +776,7 @@ async function syncState() {
 function startSyncLoop() {
     stopSyncLoop();
     syncState();
-    state.syncTimer = window.setInterval(syncState, 1800);
+    state.syncTimer = window.setInterval(syncState, SYNC_INTERVAL_MS);
 }
 
 function stopSyncLoop() {
@@ -740,8 +786,67 @@ function stopSyncLoop() {
     }
 }
 
+function applyPersonalRoute(user) {
+    if (!user || !user.username) {
+        return;
+    }
+
+    state.usernamePath = normalizePathUsername(user.username);
+    const targetUrl = user.path_link || personalPathLink(user);
+    if (targetUrl && window.location.href !== targetUrl) {
+        window.history.replaceState({}, '', targetUrl);
+    }
+}
+
+function finalizeLogin(result, hintText) {
+    state.currentUser = result.user;
+    state.inviteInfo = result.invite;
+    adoptInviteToken(result.invite.token);
+    persistSession(result.user);
+    applyPersonalRoute(result.user);
+    state.messages = [];
+    state.lastMessageId = 0;
+    setAuthHint(hintText);
+    render();
+    startSyncLoop();
+}
+
+async function loginByPath(username, silent = false) {
+    try {
+        const result = await api('login_path', {
+            method: 'POST',
+            payload: { username },
+            includeInvite: false
+        });
+        finalizeLogin(result, UI.pathLoggedInHint);
+    } catch (error) {
+        if (!silent) {
+            setAuthHint(error.message, true);
+        } else {
+            setAuthHint(error.message, true);
+            render();
+        }
+    }
+}
+
 async function loginUser(event) {
     event.preventDefault();
+
+    const username = dom.usernameInput.value.trim();
+    if (!username) {
+        setAuthHint('Enter a username first.', true);
+        return;
+    }
+
+    if (state.usernamePath && !state.inviteInfo) {
+        if (normalizePathUsername(username) !== state.usernamePath) {
+            setAuthHint(UI.pathMismatchHint, true);
+            return;
+        }
+
+        await loginByPath(state.usernamePath);
+        return;
+    }
 
     if (!state.inviteInfo) {
         setAuthHint(UI.needInviteHint, true);
@@ -749,20 +854,11 @@ async function loginUser(event) {
     }
 
     try {
-        const username = dom.usernameInput.value.trim();
         const result = await api('login', {
             method: 'POST',
             payload: { username }
         });
-
-        state.currentUser = result.user;
-        state.inviteInfo = result.invite;
-        state.messages = [];
-        state.lastMessageId = 0;
-        persistSession(result.user);
-        setAuthHint(UI.loggedInHint);
-        render();
-        startSyncLoop();
+        finalizeLogin(result, UI.loggedInHint);
     } catch (error) {
         setAuthHint(error.message, true);
     }
@@ -770,95 +866,23 @@ async function loginUser(event) {
 
 async function restoreSession() {
     const rawUserId = localStorage.getItem(USER_STORAGE_KEY);
-    if (!rawUserId || !state.inviteToken) {
-        render();
-        return;
+    if (rawUserId && state.inviteToken) {
+        state.currentUser = { id: Number(rawUserId) };
+
+        try {
+            await syncState();
+            startSyncLoop();
+            return;
+        } catch {
+            clearStoredUser();
+            state.currentUser = null;
+            render();
+        }
     }
 
-    state.currentUser = { id: Number(rawUserId) };
-
-    try {
-        await syncState();
-        startSyncLoop();
-    } catch {
-        clearStoredUser();
-        state.currentUser = null;
-        render();
-    }
-}
-
-async function handleAdminLogin(event) {
-    event.preventDefault();
-
-    const key = dom.adminKeyInput.value.trim();
-    if (!key) {
-        setAdminStatus(UI.adminNeedKey, true);
-        return;
-    }
-
-    state.adminKey = key;
-    localStorage.setItem(ADMIN_STORAGE_KEY, key);
-    await loadAdminInvites();
-}
-
-function handleAdminLogout() {
-    localStorage.removeItem(ADMIN_STORAGE_KEY);
-    state.adminKey = null;
-    state.adminInvites = [];
-    state.adminError = '';
-    dom.adminKeyInput.value = '';
-    render();
-}
-
-async function handleCreateInvite(event) {
-    event.preventDefault();
-
-    if (!state.adminKey) {
-        setAdminStatus(UI.adminNeedKey, true);
-        return;
-    }
-
-    try {
-        const result = await api('admin_create_invite', {
-            method: 'POST',
-            payload: {
-                admin_key: state.adminKey,
-                note: dom.inviteNoteInput.value.trim()
-            },
-            includeInvite: false
-        });
-
-        state.adminInvites = result.invites;
-        dom.inviteNoteInput.value = '';
-        render();
-        await copyText(result.invite.link);
-        setAdminStatus(`${UI.adminCreatedPrefix}${result.invite.link}`);
-    } catch (error) {
-        setAdminStatus(error.message, true);
-    }
-}
-
-async function revokeInvite(token) {
-    if (!state.adminKey) {
-        setAdminStatus(UI.adminNeedKey, true);
-        return;
-    }
-
-    try {
-        const result = await api('admin_revoke_invite', {
-            method: 'POST',
-            payload: {
-                admin_key: state.adminKey,
-                invite_token: token
-            },
-            includeInvite: false
-        });
-
-        state.adminInvites = result.invites;
-        setAdminStatus(UI.adminRevoked);
-        render();
-    } catch (error) {
-        setAdminStatus(error.message, true);
+    if (state.usernamePath) {
+        dom.usernameInput.value = state.usernamePath;
+        await loginByPath(state.usernamePath, true);
     }
 }
 
@@ -958,7 +982,8 @@ async function acquireLocalStream(mode) {
     state.isMuted = false;
     state.isCameraEnabled = mode === 'video';
     attachStreams();
-}function cleanupCall(notifyPeer = false, nextState = 'ended') {
+}
+function cleanupCall(notifyPeer = false, nextState = 'ended') {
     const currentCall = state.currentCall;
 
     if (notifyPeer && currentCall && state.currentUser) {
@@ -997,6 +1022,7 @@ async function acquireLocalStream(mode) {
     state.incomingOffer = null;
     state.callState = nextState;
     attachStreams();
+    stopTitleFlash();
     render();
 }
 
@@ -1042,6 +1068,7 @@ async function createPeerConnection(call) {
         const status = peerConnection.connectionState;
         if (status === 'connected') {
             state.callState = call.mode === 'video' ? 'in_call_video' : 'in_call_audio';
+            stopTitleFlash();
             render();
         }
 
@@ -1107,7 +1134,7 @@ async function startCall(mode) {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043D\u0430\u0447\u0430\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A: ${error.message}`, true);
+        setAuthHint(`Could not start the call: ${error.message}`, true);
     }
 }
 
@@ -1145,6 +1172,7 @@ async function acceptIncomingCall() {
         await peerConnection.setLocalDescription(answer);
 
         state.callState = 'connecting';
+        stopTitleFlash();
         render();
 
         await api('send_signal', {
@@ -1162,7 +1190,7 @@ async function acceptIncomingCall() {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`\u041D\u0435 \u0443\u0434\u0430\u043B\u043E\u0441\u044C \u043F\u0440\u0438\u043D\u044F\u0442\u044C \u0437\u0432\u043E\u043D\u043E\u043A: ${error.message}`, true);
+        setAuthHint(`Could not accept the call: ${error.message}`, true);
     }
 }
 
@@ -1174,6 +1202,7 @@ async function declineIncomingCall() {
     const offer = state.incomingOffer;
     state.incomingOffer = null;
     state.callState = 'idle';
+    stopTitleFlash();
     render();
 
     try {
@@ -1190,6 +1219,16 @@ async function declineIncomingCall() {
     } catch (error) {
         setAuthHint(error.message, true);
     }
+}
+
+async function notifyIncomingCall(signal) {
+    const isVideo = signal.payload.mode === 'video';
+    const body = isVideo ? UI.incomingCallBodyVideo : UI.incomingCallBodyAudio;
+    await showSystemNotification(signal.sender_display_name, body, {
+        tag: `call-${signal.conversation_id}-${signal.id}`,
+        url: personalPathLink(state.currentUser)
+    });
+    flashTitle(`${signal.sender_display_name} ${UI.incomingCallTitleSuffix}`);
 }
 
 async function processSignals(signals) {
@@ -1212,6 +1251,7 @@ async function processSignals(signals) {
             state.incomingOffer = signal;
             state.callState = 'ringing';
             render();
+            await notifyIncomingCall(signal);
             continue;
         }
 
@@ -1227,7 +1267,8 @@ async function processSignals(signals) {
             const candidate = new RTCIceCandidate(signal.payload.candidate);
             if (
                 state.peerConnection &&
-                state.currentCall?.conversationId === signal.conversation_id &&
+                state.currentCall &&
+                state.currentCall.conversationId === signal.conversation_id &&
                 state.peerConnection.remoteDescription
             ) {
                 await state.peerConnection.addIceCandidate(candidate);
@@ -1283,11 +1324,11 @@ function hydrateInviteToken() {
 
 async function initialize() {
     hydrateInviteToken();
-    loadAdminKeyFromStorage();
+    await registerServiceWorker();
     render();
     await loadInviteStatus();
     await restoreSession();
-    await loadAdminInvites();
+    render();
 }
 
 dom.loginForm.addEventListener('submit', loginUser);
@@ -1299,9 +1340,17 @@ dom.declineCallButton.addEventListener('click', declineIncomingCall);
 dom.hangupButton.addEventListener('click', () => cleanupCall(true));
 dom.muteButton.addEventListener('click', toggleMute);
 dom.cameraButton.addEventListener('click', toggleCamera);
-dom.adminLoginForm.addEventListener('submit', handleAdminLogin);
-dom.adminLogoutButton.addEventListener('click', handleAdminLogout);
-dom.createInviteForm.addEventListener('submit', handleCreateInvite);
+dom.notificationButton.addEventListener('click', requestNotificationAccess);
 window.addEventListener('beforeunload', () => cleanupCall(true));
+window.addEventListener('focus', () => {
+    stopTitleFlash();
+    syncState();
+});
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        stopTitleFlash();
+        syncState();
+    }
+});
 
 initialize();

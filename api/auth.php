@@ -45,6 +45,12 @@ function buildInviteLink(string $token, ?string $baseUrl = null): string
     return $base . '/?invite=' . rawurlencode($token);
 }
 
+function buildUserPathLink(string $username, ?string $baseUrl = null): string
+{
+    $base = rtrim($baseUrl ?: appBaseUrl(), '/');
+    return $base . '/' . rawurlencode(normalizeUsername($username));
+}
+
 function inviteIsExpired(array $invite): bool
 {
     return $invite['expires_at'] !== null && strtotime((string) $invite['expires_at']) <= time();
@@ -59,6 +65,31 @@ function fetchInviteByToken(string $inviteToken, bool $forUpdate = false): ?arra
 
     $statement = db()->prepare($sql);
     $statement->execute(['token' => normalizeInviteToken($inviteToken)]);
+    $invite = $statement->fetch();
+
+    return $invite ?: null;
+}
+
+function fetchInviteByAssignedUsername(string $username, bool $forUpdate = false): ?array
+{
+    $sql = <<<'SQL'
+    SELECT
+        invites.*, 
+        users.display_name AS assigned_user_display_name
+    FROM invites
+    LEFT JOIN users ON users.id = invites.assigned_user_id
+    WHERE invites.assigned_username = :assigned_username
+    LIMIT 1
+    SQL;
+
+    if ($forUpdate) {
+        $sql .= ' FOR UPDATE';
+    }
+
+    $statement = db()->prepare($sql);
+    $statement->execute([
+        'assigned_username' => normalizeUsername($username),
+    ]);
     $invite = $statement->fetch();
 
     return $invite ?: null;
@@ -84,6 +115,11 @@ function requireActiveInvite(string $inviteToken, bool $forUpdate = false): arra
 
 function serializeInvite(array $invite, ?string $baseUrl = null): array
 {
+    $pathLink = null;
+    if (!empty($invite['assigned_username'])) {
+        $pathLink = buildUserPathLink((string) $invite['assigned_username'], $baseUrl);
+    }
+
     return [
         'id' => (int) $invite['id'],
         'token' => $invite['token'],
@@ -98,6 +134,7 @@ function serializeInvite(array $invite, ?string $baseUrl = null): array
         'revoked_at' => $invite['revoked_at'],
         'is_claimed' => $invite['assigned_user_id'] !== null,
         'link' => buildInviteLink($invite['token'], $baseUrl),
+        'path_link' => $pathLink,
     ];
 }
 
@@ -291,6 +328,66 @@ function loginWithInvite(string $inviteToken, string $name): array
     return requireUser($userId);
 }
 
+function loginWithUsernamePath(string $username): array
+{
+    $normalizedUsername = normalizeUsername($username);
+    $pdo = db();
+    $pdo->beginTransaction();
+
+    try {
+        $user = getUserByUsername($normalizedUsername, true);
+        if ($user === null) {
+            fail('User not found. Open the invite link first.', 404);
+        }
+
+        $invite = fetchInviteByAssignedUsername($normalizedUsername, true);
+        if ($invite === null || $invite['assigned_user_id'] === null) {
+            fail('This personal link is not ready yet. Open the invite link first.', 403);
+        }
+
+        if ((int) $invite['assigned_user_id'] !== (int) $user['id']) {
+            fail('This personal link is linked to another account.', 403);
+        }
+
+        if ($invite['revoked_at'] !== null) {
+            fail('This personal link has been revoked.', 403);
+        }
+
+        if (inviteIsExpired($invite)) {
+            fail('This personal link has expired.', 403);
+        }
+
+        $statement = $pdo->prepare(
+            'UPDATE users
+             SET last_seen_at = :last_seen_at
+             WHERE id = :id'
+        );
+        $statement->execute([
+            'last_seen_at' => nowUtc(),
+            'id' => $user['id'],
+        ]);
+
+        $pdo->commit();
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        throw $exception;
+    }
+
+    $freshUser = requireUser((int) $user['id']);
+    $freshInvite = fetchInviteByAssignedUsername($normalizedUsername);
+    if ($freshInvite === null) {
+        fail('Invite for this personal link was not found.', 404);
+    }
+
+    return [
+        'user' => $freshUser,
+        'invite' => $freshInvite,
+    ];
+}
+
 function authorizeInviteSession(int $userId, string $inviteToken): array
 {
     $user = requireUser($userId);
@@ -333,6 +430,7 @@ function serializeUser(array $user, ?int $currentUserId = null): array
         'last_seen_at' => $user['last_seen_at'],
         'is_online' => isUserOnline($user['last_seen_at']),
         'is_current_user' => $currentUserId !== null && (int) $user['id'] === $currentUserId,
+        'path_link' => buildUserPathLink((string) $user['username']),
     ];
 }
 
@@ -348,6 +446,7 @@ function listUsers(int $currentUserId): array
         $statement->fetchAll()
     );
 }
+
 function adminKey(): string
 {
     return configValue('DEUTSCHGRAM_ADMIN_KEY', 'DEUTSCHGRAM_ADMIN_KEY', 'deutschgram-admin') ?? 'deutschgram-admin';

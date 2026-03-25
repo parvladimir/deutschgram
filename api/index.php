@@ -44,6 +44,19 @@ try {
             ]);
             break;
 
+        case 'login_path':
+            requireMethod('POST');
+
+            $auth = loginWithUsernamePath((string) ($data['username'] ?? ''));
+            $user = $auth['user'];
+
+            jsonResponse([
+                'ok' => true,
+                'user' => serializeUser($user, (int) $user['id']),
+                'invite' => serializeInvite($auth['invite']),
+            ]);
+            break;
+
         case 'sync':
             requireMethod('GET');
 
