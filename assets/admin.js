@@ -1,18 +1,17 @@
 const UI = {
-    needKey: 'Enter the admin key to manage invites.',
-    loading: 'Loading invites...',
-    ready: 'Admin is ready. You can create new invite links.',
-    wrongKey: 'Wrong admin key.',
-    empty: 'There are no invites yet.',
-    copied: 'Link copied.',
-    personalPending: 'Will appear after the first sign-in.',
-    active: 'Active',
-    claimed: 'Claimed',
-    revoked: 'Revoked',
-    neverUsed: 'Never used yet',
-    lastUsedPrefix: 'Last sign-in: ',
-    createdPrefix: 'Invite created: ',
-    revokedText: 'Invite revoked.'
+    needKey: 'Введите admin key, чтобы управлять приглашениями.',
+    loading: 'Загружаю приглашения...',
+    ready: 'Админка готова. Можно создавать новые invite-ссылки.',
+    empty: 'Приглашений пока нет.',
+    copied: 'Ссылка скопирована.',
+    personalPending: 'Появится после первого входа.',
+    active: 'Активно',
+    claimed: 'Закреплено',
+    revoked: 'Отключено',
+    neverUsed: 'ещё не использовалось',
+    lastUsedPrefix: 'последний вход: ',
+    createdPrefix: 'Приглашение создано: ',
+    revokedText: 'Приглашение отключено.'
 };
 
 const ADMIN_STORAGE_KEY = 'deutschgram-admin-key';
@@ -36,15 +35,6 @@ const dom = {
     adminInvitesList: document.getElementById('adminInvitesList'),
     inviteRowTemplate: document.getElementById('inviteRowTemplate')
 };
-
-function escapeHtml(value) {
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
 
 function formatDateTime(dateString) {
     const date = new Date(String(dateString).replace(' ', 'T') + 'Z');

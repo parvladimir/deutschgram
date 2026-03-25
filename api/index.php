@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/chat.php';
+require __DIR__ . '/push.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -54,6 +55,51 @@ try {
                 'ok' => true,
                 'user' => serializeUser($user, (int) $user['id']),
                 'invite' => serializeInvite($auth['invite']),
+            ]);
+            break;
+
+        case 'push_public_key':
+            requireMethod('GET');
+            jsonResponse([
+                'ok' => true,
+                'public_key' => pushPublicKey(),
+            ]);
+            break;
+
+        case 'push_subscribe':
+            requireMethod('POST');
+
+            $userId = (int) ($data['user_id'] ?? 0);
+            $result = registerPushSubscription(
+                $userId,
+                (string) ($data['invite_token'] ?? ''),
+                is_array($data['subscription'] ?? null) ? $data['subscription'] : [],
+                (string) ($data['device_token'] ?? '')
+            );
+
+            jsonResponse([
+                'ok' => true,
+                'subscription' => $result,
+            ]);
+            break;
+
+        case 'push_unsubscribe':
+            requireMethod('POST');
+            unregisterPushSubscription(
+                (int) ($data['user_id'] ?? 0),
+                (string) ($data['invite_token'] ?? ''),
+                (string) ($data['device_token'] ?? '')
+            );
+            jsonResponse(['ok' => true]);
+            break;
+
+        case 'push_pull':
+            if (strcasecmp($_SERVER['REQUEST_METHOD'] ?? 'GET', 'GET') !== 0 && strcasecmp($_SERVER['REQUEST_METHOD'] ?? 'GET', 'POST') !== 0) {
+                fail('Method not allowed.', 405);
+            }
+            jsonResponse([
+                'ok' => true,
+                'notifications' => pullPushNotifications((string) ($data['device_token'] ?? '')),
             ]);
             break;
 
@@ -113,6 +159,7 @@ try {
 
             $message = sendMessage($conversationId, $userId, (string) ($data['body'] ?? ''));
             markConversationRead($conversationId, $userId);
+            queueMessagePushNotifications($conversationId, $userId, $message);
 
             jsonResponse([
                 'ok' => true,
@@ -132,6 +179,10 @@ try {
             authorizeInviteSession($userId, (string) ($data['invite_token'] ?? ''));
             touchPresence($userId);
             sendSignal($conversationId, $userId, $recipientId, $type, $payload);
+
+            if ($type === 'call-offer') {
+                queueCallPushNotification($conversationId, $userId, $recipientId, (string) ($payload['mode'] ?? 'audio'));
+            }
 
             jsonResponse(['ok' => true]);
             break;

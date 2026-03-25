@@ -1,0 +1,19 @@
+{
+  "name": "Deutschgram Call",
+  "short_name": "Deutschgram",
+  "description": "Семейный веб-мессенджер для сообщений, аудио- и видеозвонков.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08131d",
+  "theme_color": "#0f2231",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

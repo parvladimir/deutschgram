@@ -5,9 +5,14 @@ declare(strict_types=1);
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0f2231">
-    <title>Deutschgram Admin</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Deutschgram Admin">
+    <title>Deutschgram Admin • Volodymyr Parashchak</title>
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body class="admin-page">
@@ -17,63 +22,64 @@ declare(strict_types=1);
     <div class="admin-shell">
         <aside class="sidebar">
             <div class="brand-card">
-                <p class="eyebrow">invite control</p>
+                <p class="eyebrow">управление приглашениями</p>
                 <h1>Deutschgram Admin</h1>
-                <p class="brand-copy">Manage invites and personal links in one place.</p>
+                <p class="brand-copy">Здесь вы создаёте приглашения, копируете личные ссылки и отключаете старые доступы.</p>
+                <p class="brand-credit">Разработчик: Volodymyr Parashchak</p>
             </div>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Admin login</h2>
-                    <p>Enter the admin key to create, copy, and revoke invite links.</p>
+                    <h2>Вход в админку</h2>
+                    <p>Введите admin key, чтобы создавать и отключать invite-ссылки.</p>
                 </div>
 
                 <form id="adminLoginForm" autocomplete="off">
                     <label class="field">
                         <span>Admin key</span>
-                        <input type="password" id="adminKeyInput" maxlength="120" placeholder="Enter admin key">
+                        <input type="password" id="adminKeyInput" maxlength="120" placeholder="Введите admin key">
                     </label>
 
                     <div class="inline-actions">
-                        <button type="submit" class="primary-button">Open admin</button>
-                        <button type="button" id="adminLogoutButton" class="secondary-button hidden">Log out</button>
+                        <button type="submit" class="primary-button">Открыть админку</button>
+                        <button type="button" id="adminLogoutButton" class="secondary-button hidden">Выйти</button>
                     </div>
                 </form>
 
-                <p id="adminStatusText" class="helper-text">Enter the administrator key to work with invites.</p>
+                <p id="adminStatusText" class="helper-text">Введите ключ администратора, чтобы работать с приглашениями.</p>
             </section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Flow</h2>
-                    <p>Invite link is used once for the first login. After that, the person can keep using a personal link like <code>/mama</code>.</p>
+                    <h2>Как это работает</h2>
+                    <p>Сначала человек открывает invite-ссылку, выбирает своё имя, а потом может заходить уже по личной ссылке вида <code>/mama</code>.</p>
                 </div>
-                <a class="secondary-button back-link" href="../">Open app</a>
+                <a class="secondary-button back-link" href="../">Открыть приложение</a>
             </section>
         </aside>
 
         <main class="chat-panel">
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Create invite</h2>
-                    <p>The note is only for you, so you can recognize the invite later.</p>
+                    <h2>Новое приглашение</h2>
+                    <p>Заметка нужна только вам, чтобы не путаться в ссылках.</p>
                 </div>
 
                 <form id="createInviteForm" class="admin-create-form" autocomplete="off">
                     <label class="field">
-                        <span>Note</span>
-                        <input type="text" id="inviteNoteInput" maxlength="255" placeholder="For example, Mama">
+                        <span>Заметка</span>
+                        <input type="text" id="inviteNoteInput" maxlength="255" placeholder="Например, Мама">
                     </label>
-                    <button type="submit" id="createInviteButton" class="primary-button wide-button">Create invite</button>
+                    <button type="submit" id="createInviteButton" class="primary-button wide-button">Создать приглашение</button>
                 </form>
             </section>
 
             <section class="panel">
                 <div class="panel-heading compact-heading">
-                    <h2>Invites</h2>
-                    <p>After the first login, a permanent personal link appears next to the invite link.</p>
+                    <h2>Приглашения</h2>
+                    <p>После первого входа рядом с invite-ссылкой появится постоянная личная ссылка.</p>
                 </div>
-                <div id="adminInvitesList" class="stack-list empty-list">Invites will appear here after admin login.</div>
+                <div id="adminInvitesList" class="stack-list empty-list">Приглашения появятся здесь после входа в админку.</div>
             </section>
         </main>
     </div>
@@ -93,14 +99,14 @@ declare(strict_types=1);
                     <div class="invite-item-link invite-link-primary"></div>
                 </div>
                 <div class="invite-link-block">
-                    <span class="eyebrow">personal</span>
+                    <span class="eyebrow">личная ссылка</span>
                     <div class="invite-item-link invite-link-personal"></div>
                 </div>
             </div>
             <div class="invite-item-actions">
-                <button type="button" class="secondary-button copy-invite-button">Copy invite</button>
-                <button type="button" class="secondary-button copy-personal-button">Copy personal</button>
-                <button type="button" class="danger-button revoke-invite-button">Revoke</button>
+                <button type="button" class="secondary-button copy-invite-button">Копировать invite</button>
+                <button type="button" class="secondary-button copy-personal-button">Копировать личную</button>
+                <button type="button" class="danger-button revoke-invite-button">Отключить</button>
             </div>
         </article>
     </template>

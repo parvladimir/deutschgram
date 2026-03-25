@@ -1,63 +1,75 @@
 ﻿const UI = {
-    online: 'online',
-    offline: 'offline',
-    idle: 'away',
-    noInviteBadge: 'Invite required',
-    invitePendingBadge: 'Checking invite...',
-    inviteReadyBadge: 'Invite active',
-    inviteClaimedBadge: 'Invite linked',
-    pathBadge: 'Personal link',
-    inviteErrorBadge: 'Link error',
-    noInviteText: 'Open the site from an invite link to sign in.',
-    inviteLoadingText: 'Checking invite...',
-    inviteClaimedTextPrefix: 'This invite already belongs to @',
-    inviteClaimedTextSuffix: '. Sign in only with this username.',
-    inviteReadyText: 'Invite is active. Enter a username and sign in.',
-    inviteNotePrefix: 'Invite note: ',
-    pathReadyPrefix: 'Personal sign-in link detected: /',
-    pathReadySuffix: '. Auto sign-in will start now. If needed, you can also press the button below.',
-    signInFirst: 'Sign in first to see people and dialogs.',
-    noUsers: 'Other people will appear here after they sign in.',
-    noConversations: 'Open a chat from the people list.',
-    newConversation: 'New dialog without messages yet',
-    headerChoose: 'choose a dialog',
-    headerOnline: 'person is online now',
-    headerOffline: 'person is offline now',
-    noConversationSelected: 'Choose a person on the left to open the chat and start a call.',
-    noMessages: 'There are no messages yet. Start the conversation first.',
-    loggedInHint: 'You are signed in. Open a dialog to continue.',
-    pathLoggedInHint: 'You are signed in via your personal link.',
-    needInviteHint: 'Open a working invite link first.',
-    pathMismatchHint: 'This personal link only works with its own username.',
-    profileEyebrow: 'your profile',
-    personalLinkLabel: 'personal link',
-    notificationDefault: 'Browser permission is not enabled yet.',
-    notificationGranted: 'Notifications are enabled for messages and calls while the tab is in the background.',
-    notificationDenied: 'Browser notifications are blocked. Allow them in the browser settings.',
-    notificationUnsupported: 'This browser does not support notifications.',
-    notificationButtonDefault: 'Enable notifications',
-    notificationButtonGranted: 'Notifications enabled',
-    notificationButtonDenied: 'Notifications blocked',
-    callIdle: 'Call has not started yet.',
-    callEnded: 'Call ended.',
-    callFailed: 'Could not connect the call.',
-    incomingAudio: 'audio call',
-    incomingVideo: 'video call',
-    muteLabel: 'Microphone',
-    unmuteLabel: 'Unmute',
-    cameraLabel: 'Camera',
-    cameraOnLabel: 'Enable camera',
-    newMessageTitle: 'New message',
-    incomingCallTitleSuffix: 'is calling',
-    incomingCallBodyAudio: 'Incoming audio call. Open Deutschgram to answer.',
-    incomingCallBodyVideo: 'Incoming video call. Open Deutschgram to answer.'
+    online: 'онлайн',
+    offline: 'оффлайн',
+    idle: 'был недавно',
+    noInviteBadge: 'Нужно приглашение',
+    invitePendingBadge: 'Проверяю invite...',
+    inviteReadyBadge: 'Приглашение активно',
+    inviteClaimedBadge: 'Приглашение закреплено',
+    pathBadge: 'Личная ссылка',
+    inviteErrorBadge: 'Ошибка ссылки',
+    noInviteText: 'Откройте сайт по invite-ссылке, чтобы войти.',
+    inviteLoadingText: 'Проверяю приглашение...',
+    inviteClaimedTextPrefix: 'Эта invite-ссылка уже закреплена за @',
+    inviteClaimedTextSuffix: '. Войти можно только под этим именем.',
+    inviteReadyText: 'Приглашение активно. Введите имя и войдите.',
+    inviteNotePrefix: 'Заметка к приглашению: ',
+    pathReadyPrefix: 'Обнаружена личная ссылка: /',
+    pathReadySuffix: '. Вход будет выполнен автоматически.',
+    signInFirst: 'Сначала войдите, чтобы видеть людей и диалоги.',
+    noUsers: 'Другие участники появятся здесь после входа.',
+    noConversations: 'Откройте чат через список людей.',
+    newConversation: 'Новый диалог без сообщений',
+    headerChoose: 'выберите диалог',
+    headerOnline: 'собеседник сейчас онлайн',
+    headerOffline: 'собеседник сейчас не в сети',
+    noConversationSelected: 'Выберите человека слева, чтобы открыть чат и начать звонок.',
+    noMessages: 'Пока нет сообщений. Начните разговор первым.',
+    loggedInHint: 'Вход выполнен. Теперь можно открыть диалог.',
+    pathLoggedInHint: 'Вход выполнен по личной ссылке.',
+    needInviteHint: 'Сначала откройте рабочую invite-ссылку.',
+    pathMismatchHint: 'Эта личная ссылка работает только со своим именем пользователя.',
+    enterUsernameHint: 'Введите имя пользователя.',
+    profileEyebrow: 'ваш профиль',
+    personalLinkLabel: 'личная ссылка',
+    notificationDefault: 'Разрешение браузера ещё не выдано.',
+    notificationPreparing: 'Разрешение получено. Подключаю push-уведомления...',
+    notificationGranted: 'Push-уведомления включены для сообщений и звонков.',
+    notificationDenied: 'Уведомления заблокированы браузером. Разрешите их в настройках.',
+    notificationUnsupported: 'Этот браузер не поддерживает уведомления.',
+    notificationButtonDefault: 'Включить уведомления',
+    notificationButtonGranted: 'Уведомления включены',
+    notificationButtonDenied: 'Уведомления заблокированы',
+    callIdle: 'Звонок ещё не начат.',
+    callEnded: 'Звонок завершён.',
+    callFailed: 'Не удалось установить звонок.',
+    callingPrefix: 'Звоним ',
+    ringingSuffix: ' звонит вам.',
+    connectingPrefix: 'Подключаем звонок с ',
+    activeAudioPrefix: 'Аудиозвонок с ',
+    activeVideoPrefix: 'Видеозвонок с ',
+    activeCallSuffix: ' активен.',
+    incomingAudio: 'аудиозвонок',
+    incomingVideo: 'видеозвонок',
+    muteLabel: 'Микрофон',
+    unmuteLabel: 'Включить микрофон',
+    cameraLabel: 'Камера',
+    cameraOnLabel: 'Включить камеру',
+    newMessageTitle: 'Новое сообщение',
+    incomingCallTitleSuffix: 'звонит',
+    incomingCallBodyAudio: 'Входящий аудиозвонок. Откройте Deutschgram, чтобы ответить.',
+    incomingCallBodyVideo: 'Входящий видеозвонок. Откройте Deutschgram, чтобы ответить.',
+    startCallErrorPrefix: 'Не удалось начать звонок: ',
+    acceptCallErrorPrefix: 'Не удалось принять звонок: '
 };
 
 const config = window.DEUTSCHGRAM_CONFIG || {};
 const USER_STORAGE_KEY = 'deutschgram-user-id';
 const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
+const PUSH_DEVICE_TOKEN_KEY = 'deutschgram-push-device-token';
 const SIGNAL_API = 'api/index.php';
-const SYNC_INTERVAL_MS = 1200;
+const SYNC_VISIBLE_MS = 5000;
+const SYNC_HIDDEN_MS = 15000;
 
 const rtcConfig = {
     iceServers: [
@@ -82,6 +94,8 @@ const state = {
     lastConversationMessageIds: new Map(),
     notificationsPrimed: false,
     serviceWorkerRegistration: null,
+    pushPublicKey: null,
+    pushSubscriptionReady: false,
     titleFlashTimer: null,
     defaultTitle: document.title,
     peerConnection: null,
@@ -189,6 +203,26 @@ function setInviteBadge(label, mode) {
     dom.inviteBadge.className = `invite-badge invite-badge-${mode}`;
 }
 
+function getPushDeviceToken() {
+    const existing = localStorage.getItem(PUSH_DEVICE_TOKEN_KEY);
+    if (existing && /^[a-f0-9]{64}$/i.test(existing)) {
+        return existing.toLowerCase();
+    }
+
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    const token = Array.from(bytes, (item) => item.toString(16).padStart(2, '0')).join('');
+    localStorage.setItem(PUSH_DEVICE_TOKEN_KEY, token);
+    return token;
+}
+
+function urlBase64ToUint8Array(value) {
+    const padding = '='.repeat((4 - (value.length % 4)) % 4);
+    const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    return Uint8Array.from(raw, (char) => char.charCodeAt(0));
+}
+
 function updateNotificationUI() {
     if (!('Notification' in window)) {
         dom.notificationButton.disabled = true;
@@ -198,17 +232,21 @@ function updateNotificationUI() {
     }
 
     const permission = Notification.permission;
-    if (permission === 'granted') {
-        dom.notificationButton.disabled = true;
-        dom.notificationButton.textContent = UI.notificationButtonGranted;
-        dom.notificationText.textContent = UI.notificationGranted;
-        return;
-    }
-
     if (permission === 'denied') {
         dom.notificationButton.disabled = true;
         dom.notificationButton.textContent = UI.notificationButtonDenied;
         dom.notificationText.textContent = UI.notificationDenied;
+        return;
+    }
+
+    if (permission === 'granted') {
+        dom.notificationButton.disabled = state.pushSubscriptionReady;
+        dom.notificationButton.textContent = state.pushSubscriptionReady
+            ? UI.notificationButtonGranted
+            : UI.notificationButtonDefault;
+        dom.notificationText.textContent = state.pushSubscriptionReady
+            ? UI.notificationGranted
+            : UI.notificationPreparing;
         return;
     }
 
@@ -396,7 +434,7 @@ function renderChatHeader() {
     dom.sendMessageButton.disabled = !canInteract;
 
     if (!activeConversation) {
-        dom.chatHeader.querySelector('h2').textContent = 'Messages';
+        dom.chatHeader.querySelector('h2').textContent = 'Сообщения';
         dom.chatHeader.querySelector('.eyebrow').textContent = UI.headerChoose;
         return;
     }
@@ -449,14 +487,14 @@ function renderMessages() {
 }
 
 function renderCallPanel() {
-    const peerName = state.activeConversation && state.activeConversation.peer ? state.activeConversation.peer.display_name : 'Contact';
+    const peerName = state.activeConversation && state.activeConversation.peer ? state.activeConversation.peer.display_name : 'Контакт';
     const labelMap = {
         idle: UI.callIdle,
-        calling: `Calling ${peerName}...`,
-        ringing: `${peerName} is calling you.`,
-        connecting: `Connecting the call with ${peerName}...`,
-        in_call_audio: `Audio call with ${peerName} is active.`,
-        in_call_video: `Video call with ${peerName} is active.`,
+        calling: `${UI.callingPrefix}${peerName}...`,
+        ringing: `${peerName} ${UI.ringingSuffix}`,
+        connecting: `${UI.connectingPrefix}${peerName}...`,
+        in_call_audio: `${UI.activeAudioPrefix}${peerName}${UI.activeCallSuffix}`,
+        in_call_video: `${UI.activeVideoPrefix}${peerName}${UI.activeCallSuffix}`,
         ended: UI.callEnded,
         failed: UI.callFailed
     };
@@ -479,7 +517,7 @@ function renderIncomingCall() {
     dom.incomingCallModal.classList.remove('hidden');
     const modeText = state.incomingOffer.payload.mode === 'video' ? UI.incomingVideo : UI.incomingAudio;
     dom.incomingCallTitle.textContent = `${state.incomingOffer.sender_display_name} ${UI.incomingCallTitleSuffix}`;
-    dom.incomingCallText.textContent = `Incoming ${modeText}. Accept?`;
+    dom.incomingCallText.textContent = `Входящий ${modeText}. Принять?`;
 }
 
 function render() {
@@ -501,7 +539,7 @@ async function api(action, options = {}) {
 
     if (includeInvite) {
         if (!state.inviteToken) {
-            throw new Error('Open the site from an invite link or personal link first.');
+            throw new Error('Сначала откройте invite-ссылку или личную ссылку.');
         }
 
         if (!Object.prototype.hasOwnProperty.call(payload, 'invite_token')) {
@@ -529,7 +567,7 @@ async function api(action, options = {}) {
     const result = await response.json();
 
     if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Request failed');
+        throw new Error(result.error || 'Ошибка запроса');
     }
 
     return result;
@@ -617,7 +655,7 @@ function stopTitleFlash() {
 
 async function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) {
-        return;
+        return null;
     }
 
     try {
@@ -625,30 +663,108 @@ async function registerServiceWorker() {
     } catch {
         state.serviceWorkerRegistration = null;
     }
+
+    return state.serviceWorkerRegistration;
 }
 
-async function showSystemNotification(title, body, options = {}) {
+async function loadPushPublicKey() {
+    if (state.pushPublicKey) {
+        return state.pushPublicKey;
+    }
+
+    const result = await api('push_public_key', {
+        method: 'GET',
+        includeInvite: false
+    });
+    state.pushPublicKey = result.public_key;
+    return state.pushPublicKey;
+}
+
+async function postPushContextToWorker() {
+    if (!state.serviceWorkerRegistration || !navigator.serviceWorker) {
+        return;
+    }
+
+    const deviceToken = getPushDeviceToken();
+    const context = {
+        pullUrl: `${SIGNAL_API}?action=push_pull&device_token=${encodeURIComponent(deviceToken)}`,
+        fallbackUrl: state.currentUser ? personalPathLink(state.currentUser) : window.location.href,
+    };
+
+    const registration = await navigator.serviceWorker.ready.catch(() => state.serviceWorkerRegistration);
+    const target = registration?.active || registration?.waiting || registration?.installing || navigator.serviceWorker.controller;
+    if (target) {
+        target.postMessage({
+            type: 'DEUTSCHGRAM_PUSH_CONTEXT',
+            context,
+        });
+    }
+}
+
+async function showLocalBrowserNotification(title, body, options = {}) {
+    if (state.pushSubscriptionReady) {
+        return;
+    }
+
     if (!('Notification' in window) || Notification.permission !== 'granted') {
         return;
     }
 
-    const notificationOptions = {
-        body,
-        tag: options.tag || 'deutschgram',
-        renotify: true,
-        data: {
-            url: options.url || window.location.href
-        }
-    };
+    try {
+        new Notification(title, {
+            body,
+            tag: options.tag || 'deutschgram-local',
+        });
+    } catch {
+    }
+}
+async function ensurePushSubscription() {
+    if (!state.currentUser || !state.inviteToken) {
+        return false;
+    }
+
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+        state.pushSubscriptionReady = false;
+        updateNotificationUI();
+        return false;
+    }
+
+    const registration = await registerServiceWorker();
+    if (!registration || !registration.pushManager) {
+        state.pushSubscriptionReady = false;
+        updateNotificationUI();
+        return false;
+    }
 
     try {
-        if (state.serviceWorkerRegistration && typeof state.serviceWorkerRegistration.showNotification === 'function') {
-            await state.serviceWorkerRegistration.showNotification(title, notificationOptions);
-            return;
+        const readyRegistration = await navigator.serviceWorker.ready.catch(() => registration);
+        let subscription = await readyRegistration.pushManager.getSubscription();
+        if (!subscription) {
+            const publicKey = await loadPushPublicKey();
+            subscription = await readyRegistration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicKey)
+            });
         }
 
-        new Notification(title, notificationOptions);
-    } catch {
+        await api('push_subscribe', {
+            method: 'POST',
+            payload: {
+                user_id: state.currentUser.id,
+                device_token: getPushDeviceToken(),
+                subscription: subscription.toJSON()
+            }
+        });
+
+        state.pushSubscriptionReady = true;
+        await postPushContextToWorker();
+        updateNotificationUI();
+        return true;
+    } catch (error) {
+        state.pushSubscriptionReady = false;
+        dom.notificationText.textContent = error.message;
+        updateNotificationUI();
+        return false;
     }
 }
 
@@ -659,9 +775,13 @@ async function requestNotificationAccess() {
     }
 
     await registerServiceWorker();
-    await Notification.requestPermission();
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+        await ensurePushSubscription();
+    }
     updateNotificationUI();
 }
+
 function rememberConversationActivity(nextConversations) {
     const nextIds = new Set();
 
@@ -678,9 +798,8 @@ function rememberConversationActivity(nextConversations) {
             const preview = conversation.last_message.body.length > 100
                 ? `${conversation.last_message.body.slice(0, 97)}...`
                 : conversation.last_message.body;
-            showSystemNotification(conversation.peer.display_name, preview, {
-                tag: `message-${conversation.id}-${nextId}`,
-                url: personalPathLink(state.currentUser)
+            showLocalBrowserNotification(conversation.peer.display_name, preview, {
+                tag: `message-${conversation.id}-${nextId}`
             });
             flashTitle(UI.newMessageTitle);
         }
@@ -727,8 +846,31 @@ async function loadInviteStatus() {
     render();
 }
 
+function nextSyncDelay() {
+    return document.hidden ? SYNC_HIDDEN_MS : SYNC_VISIBLE_MS;
+}
+
+function stopSyncLoop() {
+    if (state.syncTimer) {
+        window.clearTimeout(state.syncTimer);
+        state.syncTimer = null;
+    }
+}
+
+function scheduleNextSync() {
+    stopSyncLoop();
+    if (!state.currentUser) {
+        return;
+    }
+
+    state.syncTimer = window.setTimeout(() => {
+        syncState();
+    }, nextSyncDelay());
+}
+
 async function syncState() {
     if (!state.currentUser || state.syncInFlight) {
+        scheduleNextSync();
         return;
     }
 
@@ -766,24 +908,16 @@ async function syncState() {
         setAuthHint(error.message, true);
         clearStoredUser();
         state.currentUser = null;
-        stopSyncLoop();
         render();
     } finally {
         state.syncInFlight = false;
+        scheduleNextSync();
     }
 }
 
 function startSyncLoop() {
     stopSyncLoop();
     syncState();
-    state.syncTimer = window.setInterval(syncState, SYNC_INTERVAL_MS);
-}
-
-function stopSyncLoop() {
-    if (state.syncTimer) {
-        window.clearInterval(state.syncTimer);
-        state.syncTimer = null;
-    }
 }
 
 function applyPersonalRoute(user) {
@@ -809,6 +943,7 @@ function finalizeLogin(result, hintText) {
     setAuthHint(hintText);
     render();
     startSyncLoop();
+    ensurePushSubscription();
 }
 
 async function loginByPath(username, silent = false) {
@@ -834,7 +969,7 @@ async function loginUser(event) {
 
     const username = dom.usernameInput.value.trim();
     if (!username) {
-        setAuthHint('Enter a username first.', true);
+        setAuthHint(UI.enterUsernameHint, true);
         return;
     }
 
@@ -871,7 +1006,7 @@ async function restoreSession() {
 
         try {
             await syncState();
-            startSyncLoop();
+            await ensurePushSubscription();
             return;
         } catch {
             clearStoredUser();
@@ -1134,7 +1269,7 @@ async function startCall(mode) {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Could not start the call: ${error.message}`, true);
+        setAuthHint(`${UI.startCallErrorPrefix}${error.message}`, true);
     }
 }
 
@@ -1190,7 +1325,7 @@ async function acceptIncomingCall() {
         });
     } catch (error) {
         cleanupCall(false, 'failed');
-        setAuthHint(`Could not accept the call: ${error.message}`, true);
+        setAuthHint(`${UI.acceptCallErrorPrefix}${error.message}`, true);
     }
 }
 
@@ -1224,9 +1359,8 @@ async function declineIncomingCall() {
 async function notifyIncomingCall(signal) {
     const isVideo = signal.payload.mode === 'video';
     const body = isVideo ? UI.incomingCallBodyVideo : UI.incomingCallBodyAudio;
-    await showSystemNotification(signal.sender_display_name, body, {
-        tag: `call-${signal.conversation_id}-${signal.id}`,
-        url: personalPathLink(state.currentUser)
+    await showLocalBrowserNotification(signal.sender_display_name, body, {
+        tag: `call-${signal.conversation_id}-${signal.id}`
     });
     flashTitle(`${signal.sender_display_name} ${UI.incomingCallTitleSuffix}`);
 }
@@ -1328,6 +1462,9 @@ async function initialize() {
     render();
     await loadInviteStatus();
     await restoreSession();
+    if (state.currentUser) {
+        await ensurePushSubscription();
+    }
     render();
 }
 
@@ -1344,6 +1481,9 @@ dom.notificationButton.addEventListener('click', requestNotificationAccess);
 window.addEventListener('beforeunload', () => cleanupCall(true));
 window.addEventListener('focus', () => {
     stopTitleFlash();
+    syncState();
+});
+window.addEventListener('pageshow', () => {
     syncState();
 });
 document.addEventListener('visibilitychange', () => {

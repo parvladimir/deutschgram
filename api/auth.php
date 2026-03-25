@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-const ONLINE_WINDOW_SECONDS = 20;
+const ONLINE_WINDOW_SECONDS = 90;
 
 function normalizeInviteToken(string $inviteToken): string
 {
@@ -418,7 +418,12 @@ function touchPresence(int $userId): void
 
 function isUserOnline(string $lastSeenAt): bool
 {
-    return (time() - strtotime($lastSeenAt)) <= ONLINE_WINDOW_SECONDS;
+    $date = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $lastSeenAt, new DateTimeZone('UTC'));
+    if (!$date instanceof DateTimeImmutable) {
+        return false;
+    }
+
+    return (time() - $date->getTimestamp()) <= ONLINE_WINDOW_SECONDS;
 }
 
 function serializeUser(array $user, ?int $currentUserId = null): array
