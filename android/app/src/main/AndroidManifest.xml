@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Deutschgram"
-        android:usesCleartextTraffic="false">
+        android:usesCleartextTraffic="${deutschgramUsesCleartextTraffic}">
 
         <activity
             android:name=".MainActivity"

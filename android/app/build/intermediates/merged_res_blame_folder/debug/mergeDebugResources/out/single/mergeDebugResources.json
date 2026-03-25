@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/xml_backup_rules.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/xml_data_extraction_rules.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/drawable_ic_launcher_background.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/layout_activity_main.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/layout/activity_main.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "de.metrogatecontrol.deutschgram.app-debug-35:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "de.metrogatecontrol.deutschgram.app-main-37:/mipmap-anydpi-v26/ic_launcher.xml"
+    }
+]

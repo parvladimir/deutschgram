@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 allowContentAccess = false
                 loadsImagesAutomatically = true
                 cacheMode = WebSettings.LOAD_DEFAULT
-                mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
 
             webViewClient = object : WebViewClient() {
@@ -132,6 +132,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun isInternalUri(uri: Uri): Boolean {
+        val host = uri.host?.lowercase() ?: return false
+        val scheme = uri.scheme?.lowercase() ?: return false
+        val allowedHost = BuildConfig.DEUTSCHGRAM_HOST.lowercase()
+        return host == allowedHost && (scheme == "https" || (BuildConfig.DEUTSCHGRAM_ALLOW_HTTP && scheme == "http"))
     }
 
     private fun handleWebPermissionRequest(request: PermissionRequest) {
@@ -180,17 +187,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val uri = Uri.parse(rawUrl)
-        val host = uri.host?.lowercase() ?: return null
-        if (uri.scheme != "https" || host != BuildConfig.DEUTSCHGRAM_HOST) {
-            return null
-        }
-
-        return uri.toString()
+        return if (isInternalUri(uri)) uri.toString() else null
     }
 
     private fun handleExternalNavigation(uri: Uri): Boolean {
-        val host = uri.host?.lowercase()
-        if (uri.scheme == "https" && host == BuildConfig.DEUTSCHGRAM_HOST) {
+        if (isInternalUri(uri)) {
             return false
         }
 

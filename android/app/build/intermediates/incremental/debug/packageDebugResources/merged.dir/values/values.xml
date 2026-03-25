@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="deutschgram_accent">#F0794A</color>
+    <color name="deutschgram_background">#08131D</color>
+    <color name="deutschgram_surface">#0F2231</color>
+    <color name="deutschgram_text">#F3ECDF</color>
+    <string name="app_name">Deutschgram Call</string>
+    <style name="Theme.Deutschgram" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/deutschgram_background</item>
+        <item name="android:navigationBarColor">@color/deutschgram_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="colorPrimary">@color/deutschgram_accent</item>
+        <item name="colorSurface">@color/deutschgram_surface</item>
+        <item name="android:windowBackground">@color/deutschgram_background</item>
+        <item name="android:forceDarkAllowed" ns1:targetApi="q">false</item>
+    </style>
+</resources>

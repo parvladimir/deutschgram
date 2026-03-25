@@ -19,11 +19,20 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "DEUTSCHGRAM_BASE_URL", "\"https://deutschgram.metro-gatecontrol.de/\"")
-        buildConfigField("String", "DEUTSCHGRAM_HOST", "\"deutschgram.metro-gatecontrol.de\"")
+        buildConfigField "String", "DEUTSCHGRAM_BASE_URL", '"https://deutschgram.metro-gatecontrol.de/"'
+        buildConfigField "String", "DEUTSCHGRAM_HOST", '"deutschgram.metro-gatecontrol.de"'
+        buildConfigField "boolean", "DEUTSCHGRAM_ALLOW_HTTP", "false"
+        manifestPlaceholders = [deutschgramUsesCleartextTraffic: "false"]
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "DEUTSCHGRAM_BASE_URL", '"http://10.0.2.2/deutschgram/"'
+            buildConfigField "String", "DEUTSCHGRAM_HOST", '"10.0.2.2"'
+            buildConfigField "boolean", "DEUTSCHGRAM_ALLOW_HTTP", "true"
+            manifestPlaceholders = [deutschgramUsesCleartextTraffic: "true"]
+        }
+
         release {
             minifyEnabled false
             proguardFiles(
