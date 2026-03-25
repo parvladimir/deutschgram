@@ -116,6 +116,7 @@ function serializeConversationRow(array $row, int $currentUserId): array
             'is_online' => isUserOnline($row['peer_last_seen_at']),
         ],
         'last_message' => $lastMessage,
+        'peer_last_read_message_id' => (int) ($row['peer_last_read_message_id'] ?? 0),
         'unread_count' => (int) $row['unread_count'],
     ];
 }
@@ -134,6 +135,7 @@ function getConversationSummary(int $conversationId, int $currentUserId): array
             peer.username AS peer_username,
             peer.display_name AS peer_display_name,
             peer.last_seen_at AS peer_last_seen_at,
+            peer_member.last_read_message_id AS peer_last_read_message_id,
             last_message.id AS last_message_id,
             last_message.body AS last_message_body,
             last_message.created_at AS last_message_created_at,
@@ -191,6 +193,7 @@ function listConversations(int $currentUserId): array
             peer.username AS peer_username,
             peer.display_name AS peer_display_name,
             peer.last_seen_at AS peer_last_seen_at,
+            peer_member.last_read_message_id AS peer_last_read_message_id,
             last_message.id AS last_message_id,
             last_message.body AS last_message_body,
             last_message.created_at AS last_message_created_at,
@@ -234,6 +237,9 @@ function listConversations(int $currentUserId): array
 
 function serializeMessage(array $message, int $currentUserId): array
 {
+    $isFromCurrentUser = (int) $message['sender_id'] === $currentUserId;
+    $peerLastReadMessageId = (int) ($message['peer_last_read_message_id'] ?? 0);
+
     return [
         'id' => (int) $message['id'],
         'conversation_id' => (int) $message['conversation_id'],
@@ -243,7 +249,8 @@ function serializeMessage(array $message, int $currentUserId): array
         'body' => $message['body'],
         'kind' => $message['kind'],
         'created_at' => $message['created_at'],
-        'is_from_current_user' => (int) $message['sender_id'] === $currentUserId,
+        'is_from_current_user' => $isFromCurrentUser,
+        'is_read_by_peer' => $isFromCurrentUser && $peerLastReadMessageId >= (int) $message['id'],
     ];
 }
 
@@ -262,7 +269,13 @@ function getConversationMessages(int $conversationId, int $currentUserId, int $a
                 messages.kind,
                 messages.created_at,
                 sender.username AS sender_username,
-                sender.display_name AS sender_display_name
+                sender.display_name AS sender_display_name,
+                (
+                    SELECT COALESCE(MAX(other_member.last_read_message_id), 0)
+                    FROM conversation_members AS other_member
+                    WHERE other_member.conversation_id = messages.conversation_id
+                      AND other_member.user_id != :current_user_id_peer
+                ) AS peer_last_read_message_id
             FROM messages
             INNER JOIN users AS sender ON sender.id = messages.sender_id
             WHERE messages.conversation_id = :conversation_id
@@ -274,6 +287,7 @@ function getConversationMessages(int $conversationId, int $currentUserId, int $a
         $statement->execute([
             'conversation_id' => $conversationId,
             'after_message_id' => $afterMessageId,
+            'current_user_id_peer' => $currentUserId,
         ]);
 
         return array_map(
@@ -294,7 +308,13 @@ function getConversationMessages(int $conversationId, int $currentUserId, int $a
                 messages.kind,
                 messages.created_at,
                 sender.username AS sender_username,
-                sender.display_name AS sender_display_name
+                sender.display_name AS sender_display_name,
+                (
+                    SELECT COALESCE(MAX(other_member.last_read_message_id), 0)
+                    FROM conversation_members AS other_member
+                    WHERE other_member.conversation_id = messages.conversation_id
+                      AND other_member.user_id != :current_user_id_peer
+                ) AS peer_last_read_message_id
             FROM messages
             INNER JOIN users AS sender ON sender.id = messages.sender_id
             WHERE messages.conversation_id = :conversation_id
@@ -304,7 +324,10 @@ function getConversationMessages(int $conversationId, int $currentUserId, int $a
         ORDER BY id ASC
         SQL
     );
-    $statement->execute(['conversation_id' => $conversationId]);
+    $statement->execute([
+        'conversation_id' => $conversationId,
+        'current_user_id_peer' => $currentUserId,
+    ]);
 
     return array_map(
         static fn(array $message): array => serializeMessage($message, $currentUserId),
@@ -324,14 +347,23 @@ function getMessageById(int $messageId, int $currentUserId): array
             messages.kind,
             messages.created_at,
             sender.username AS sender_username,
-            sender.display_name AS sender_display_name
+            sender.display_name AS sender_display_name,
+            (
+                SELECT COALESCE(MAX(other_member.last_read_message_id), 0)
+                FROM conversation_members AS other_member
+                WHERE other_member.conversation_id = messages.conversation_id
+                  AND other_member.user_id != :current_user_id_peer
+            ) AS peer_last_read_message_id
         FROM messages
         INNER JOIN users AS sender ON sender.id = messages.sender_id
         WHERE messages.id = :message_id
         LIMIT 1
         SQL
     );
-    $statement->execute(['message_id' => $messageId]);
+    $statement->execute([
+        'message_id' => $messageId,
+        'current_user_id_peer' => $currentUserId,
+    ]);
     $message = $statement->fetch();
 
     if ($message === false) {

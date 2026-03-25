@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="deutschgram_background">#08131D</color>
+    <color name="deutschgram_surface">#0F2231</color>
+    <color name="deutschgram_accent">#F0794A</color>
+    <color name="deutschgram_text">#F3ECDF</color>
+</resources>

@@ -1,4 +1,4 @@
-﻿const UI = {
+const UI = {
     online: 'онлайн',
     offline: 'оффлайн',
     idle: 'был недавно',
@@ -32,14 +32,21 @@
     enterUsernameHint: 'Введите имя пользователя.',
     profileEyebrow: 'ваш профиль',
     personalLinkLabel: 'личная ссылка',
+    youLabel: 'Вы',
+    deliveredStatus: 'доставлено',
+    readStatus: 'прочитано',
     notificationDefault: 'Разрешение браузера ещё не выдано.',
     notificationPreparing: 'Разрешение получено. Подключаю push-уведомления...',
     notificationGranted: 'Push-уведомления включены для сообщений и звонков.',
-    notificationDenied: 'Уведомления заблокированы браузером. Разрешите их в настройках.',
+    notificationDenied: 'Уведомления заблокированы браузером. Разрешите их в настройках сайта.',
+    notificationNeedHttps: 'На телефоне уведомления работают только по HTTPS.',
+    notificationNeedInstall: 'На iPhone push работают после "На экран Домой".',
+    notificationPushUnavailable: 'Этот мобильный браузер не поддерживает push-уведомления для сайта.',
     notificationUnsupported: 'Этот браузер не поддерживает уведомления.',
     notificationButtonDefault: 'Включить уведомления',
     notificationButtonGranted: 'Уведомления включены',
     notificationButtonDenied: 'Уведомления заблокированы',
+    notificationButtonUnavailable: 'Недоступно',
     callIdle: 'Звонок ещё не начат.',
     callEnded: 'Звонок завершён.',
     callFailed: 'Не удалось установить звонок.',
@@ -65,6 +72,7 @@
 
 const config = window.DEUTSCHGRAM_CONFIG || {};
 const USER_STORAGE_KEY = 'deutschgram-user-id';
+const USERNAME_STORAGE_KEY = 'deutschgram-username';
 const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
 const PUSH_DEVICE_TOKEN_KEY = 'deutschgram-push-device-token';
 const SIGNAL_API = 'api/index.php';
@@ -96,6 +104,7 @@ const state = {
     serviceWorkerRegistration: null,
     pushPublicKey: null,
     pushSubscriptionReady: false,
+    notificationError: '',
     titleFlashTimer: null,
     defaultTitle: document.title,
     peerConnection: null,
@@ -223,11 +232,40 @@ function urlBase64ToUint8Array(value) {
     return Uint8Array.from(raw, (char) => char.charCodeAt(0));
 }
 
-function updateNotificationUI() {
+function isStandaloneMode() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+}
+
+function pushSupportIssue() {
+    const host = String(window.location.hostname || '').toLowerCase();
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+    const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent || '');
+
     if (!('Notification' in window)) {
+        return UI.notificationUnsupported;
+    }
+
+    if (!window.isSecureContext && !isLocalHost) {
+        return UI.notificationNeedHttps;
+    }
+
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        return UI.notificationPushUnavailable;
+    }
+
+    if (isIos && !isStandaloneMode()) {
+        return UI.notificationNeedInstall;
+    }
+
+    return '';
+}
+
+function updateNotificationUI() {
+    const supportIssue = pushSupportIssue();
+    if (supportIssue) {
         dom.notificationButton.disabled = true;
-        dom.notificationButton.textContent = UI.notificationButtonDenied;
-        dom.notificationText.textContent = UI.notificationUnsupported;
+        dom.notificationButton.textContent = UI.notificationButtonUnavailable;
+        dom.notificationText.textContent = supportIssue;
         return;
     }
 
@@ -235,7 +273,7 @@ function updateNotificationUI() {
     if (permission === 'denied') {
         dom.notificationButton.disabled = true;
         dom.notificationButton.textContent = UI.notificationButtonDenied;
-        dom.notificationText.textContent = UI.notificationDenied;
+        dom.notificationText.textContent = state.notificationError || UI.notificationDenied;
         return;
     }
 
@@ -246,13 +284,13 @@ function updateNotificationUI() {
             : UI.notificationButtonDefault;
         dom.notificationText.textContent = state.pushSubscriptionReady
             ? UI.notificationGranted
-            : UI.notificationPreparing;
+            : (state.notificationError || UI.notificationPreparing);
         return;
     }
 
     dom.notificationButton.disabled = false;
     dom.notificationButton.textContent = UI.notificationButtonDefault;
-    dom.notificationText.textContent = UI.notificationDefault;
+    dom.notificationText.textContent = state.notificationError || UI.notificationDefault;
 }
 
 function updateInviteState() {
@@ -476,7 +514,14 @@ function renderMessages() {
         const meta = fragment.querySelector('.message-meta');
         const body = fragment.querySelector('.message-body');
         bubble.classList.toggle('own', message.is_from_current_user);
-        meta.textContent = `${message.sender_display_name} · ${formatTime(message.created_at)}`;
+        const metaParts = [
+            message.is_from_current_user ? UI.youLabel : message.sender_display_name,
+            formatTime(message.created_at)
+        ];
+        if (message.is_from_current_user) {
+            metaParts.push(message.is_read_by_peer ? UI.readStatus : UI.deliveredStatus);
+        }
+        meta.textContent = metaParts.join(' · ');
         body.textContent = message.body;
         dom.messagesPanel.appendChild(fragment);
     });
@@ -484,6 +529,24 @@ function renderMessages() {
     if (shouldStickToBottom) {
         dom.messagesPanel.scrollTop = dom.messagesPanel.scrollHeight;
     }
+}
+
+function applyPeerReadState() {
+    if (!state.activeConversation || state.messages.length === 0) {
+        return;
+    }
+
+    const peerLastReadMessageId = Number(state.activeConversation.peer_last_read_message_id || 0);
+    state.messages = state.messages.map((message) => {
+        if (!message.is_from_current_user) {
+            return message;
+        }
+
+        return {
+            ...message,
+            is_read_by_peer: message.id <= peerLastReadMessageId
+        };
+    });
 }
 
 function renderCallPanel() {
@@ -607,6 +670,7 @@ function upsertMessages(messages) {
 
 function persistSession(user) {
     localStorage.setItem(USER_STORAGE_KEY, String(user.id));
+    localStorage.setItem(USERNAME_STORAGE_KEY, normalizePathUsername(user.username || ''));
     if (state.inviteToken) {
         localStorage.setItem(INVITE_STORAGE_KEY, state.inviteToken);
     }
@@ -614,6 +678,7 @@ function persistSession(user) {
 
 function clearStoredUser() {
     localStorage.removeItem(USER_STORAGE_KEY);
+    localStorage.removeItem(USERNAME_STORAGE_KEY);
 }
 
 function adoptInviteToken(token) {
@@ -723,8 +788,17 @@ async function ensurePushSubscription() {
         return false;
     }
 
-    if (!('Notification' in window) || Notification.permission !== 'granted') {
+    const supportIssue = pushSupportIssue();
+    if (supportIssue) {
         state.pushSubscriptionReady = false;
+        state.notificationError = '';
+        updateNotificationUI();
+        return false;
+    }
+
+    if (Notification.permission !== 'granted') {
+        state.pushSubscriptionReady = false;
+        state.notificationError = '';
         updateNotificationUI();
         return false;
     }
@@ -732,6 +806,7 @@ async function ensurePushSubscription() {
     const registration = await registerServiceWorker();
     if (!registration || !registration.pushManager) {
         state.pushSubscriptionReady = false;
+        state.notificationError = UI.notificationPushUnavailable;
         updateNotificationUI();
         return false;
     }
@@ -757,25 +832,29 @@ async function ensurePushSubscription() {
         });
 
         state.pushSubscriptionReady = true;
+        state.notificationError = '';
         await postPushContextToWorker();
         updateNotificationUI();
         return true;
     } catch (error) {
         state.pushSubscriptionReady = false;
-        dom.notificationText.textContent = error.message;
+        state.notificationError = error && error.message ? error.message : UI.notificationDenied;
         updateNotificationUI();
         return false;
     }
 }
 
 async function requestNotificationAccess() {
-    if (!('Notification' in window)) {
+    const supportIssue = pushSupportIssue();
+    if (supportIssue) {
+        state.notificationError = '';
         updateNotificationUI();
         return;
     }
 
     await registerServiceWorker();
     const permission = await Notification.requestPermission();
+    state.notificationError = '';
     if (permission === 'granted') {
         await ensurePushSubscription();
     }
@@ -897,6 +976,7 @@ async function syncState() {
                 state.messages = [];
             }
             upsertMessages(result.messages);
+            applyPeerReadState();
         } else if (!state.activeConversation) {
             state.messages = [];
             state.lastMessageId = 0;
@@ -1000,6 +1080,18 @@ async function loginUser(event) {
 }
 
 async function restoreSession() {
+    if (state.usernamePath) {
+        const storedUsername = normalizePathUsername(localStorage.getItem(USERNAME_STORAGE_KEY));
+        if (storedUsername && storedUsername !== state.usernamePath) {
+            clearStoredUser();
+            state.currentUser = null;
+        }
+
+        dom.usernameInput.value = state.usernamePath;
+        await loginByPath(state.usernamePath, true);
+        return;
+    }
+
     const rawUserId = localStorage.getItem(USER_STORAGE_KEY);
     if (rawUserId && state.inviteToken) {
         state.currentUser = { id: Number(rawUserId) };
@@ -1013,11 +1105,6 @@ async function restoreSession() {
             state.currentUser = null;
             render();
         }
-    }
-
-    if (state.usernamePath) {
-        dom.usernameInput.value = state.usernamePath;
-        await loginByPath(state.usernamePath, true);
     }
 }
 
@@ -1083,6 +1170,7 @@ async function handleSendMessage(event) {
         dom.messageInput.value = '';
         upsertMessages([result.message]);
         state.activeConversation = result.conversation;
+        applyPeerReadState();
         mergeConversations(
             state.conversations.map((conversation) =>
                 conversation.id === result.conversation.id ? result.conversation : conversation
@@ -1448,6 +1536,11 @@ function hydrateInviteToken() {
 
     if (urlToken) {
         adoptInviteToken(urlToken);
+        return;
+    }
+
+    if (state.usernamePath) {
+        state.inviteToken = null;
         return;
     }
 
