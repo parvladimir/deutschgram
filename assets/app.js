@@ -127,6 +127,9 @@ const dom = {
     inviteStatusText: document.getElementById('inviteStatusText'),
     routeHint: document.getElementById('routeHint'),
     inviteNote: document.getElementById('inviteNote'),
+    inviteInput: document.getElementById('inviteInput'),
+    applyInviteButton: document.getElementById('applyInviteButton'),
+    pasteInviteButton: document.getElementById('pasteInviteButton'),
     notificationButton: document.getElementById('notificationButton'),
     notificationText: document.getElementById('notificationText'),
     currentUserCard: document.getElementById('currentUserCard'),
@@ -212,6 +215,146 @@ function setInviteBadge(label, mode) {
     dom.inviteBadge.className = `invite-badge invite-badge-${mode}`;
 }
 
+function appRootUrl() {
+    try {
+        return new URL(String(config.appRootPath || '/'), window.location.origin);
+    } catch {
+        return new URL('/', window.location.origin);
+    }
+}
+
+function buildInviteUrl(token) {
+    return new URL('join/' + encodeURIComponent(normalizeInviteToken(token)), appRootUrl());
+}
+
+function extractInviteToken(value) {
+    const raw = String(value || '').trim();
+    if (!raw) {
+        return '';
+    }
+
+    const directToken = normalizeInviteToken(raw);
+    if (directToken.length >= 32) {
+        return directToken;
+    }
+
+    try {
+        const url = new URL(raw);
+        const fromQuery = normalizeInviteToken(url.searchParams.get('invite'));
+        if (fromQuery.length >= 32) {
+            return fromQuery;
+        }
+
+        const segments = String(url.pathname || '').split('/').filter(Boolean);
+        const joinIndex = segments.findIndex((segment) => segment.toLowerCase() === 'join');
+        if (joinIndex !== -1 && segments[joinIndex + 1]) {
+            const fromJoinPath = normalizeInviteToken(segments[joinIndex + 1]);
+            if (fromJoinPath.length >= 32) {
+                return fromJoinPath;
+            }
+        }
+
+        const trailingSegment = segments.length > 0 ? normalizeInviteToken(segments[segments.length - 1]) : '';
+        if (trailingSegment.length >= 32) {
+            return trailingSegment;
+        }
+    } catch {
+    }
+
+    const queryMatch = raw.match(/[?&]invite=([a-f0-9]+)/i);
+    if (queryMatch) {
+        return normalizeInviteToken(queryMatch[1]);
+    }
+
+    const joinMatch = raw.match(/(?:^|\/)join\/([a-f0-9]{32,})(?:$|[/?#])/i);
+    if (joinMatch) {
+        return normalizeInviteToken(joinMatch[1]);
+    }
+
+    const rawTokenMatch = raw.match(/\b([a-f0-9]{32,})\b/i);
+    return rawTokenMatch ? normalizeInviteToken(rawTokenMatch[1]) : '';
+}
+
+function updateInviteControls() {
+    if (!dom.inviteInput) {
+        return;
+    }
+
+    const lockedByPath = Boolean(state.usernamePath && !state.currentUser);
+    const disabled = Boolean(state.currentUser) || lockedByPath;
+
+    dom.inviteInput.disabled = disabled;
+
+    if (dom.applyInviteButton) {
+        dom.applyInviteButton.disabled = disabled;
+    }
+
+    if (dom.pasteInviteButton) {
+        dom.pasteInviteButton.disabled = disabled;
+    }
+
+    if (!dom.inviteInput.value.trim() && state.inviteToken) {
+        dom.inviteInput.value = state.inviteToken;
+    }
+}
+
+async function applyInviteFromValue(rawValue, focusUsername = true) {
+    const token = extractInviteToken(rawValue);
+    if (!token) {
+        setAuthHint('Вставьте полную invite-ссылку или код приглашения.', true);
+        return false;
+    }
+
+    const inviteUrl = buildInviteUrl(token);
+
+    if (state.usernamePath) {
+        window.location.href = inviteUrl.toString();
+        return false;
+    }
+
+    adoptInviteToken(token);
+    state.inviteInfo = null;
+    state.inviteError = '';
+
+    if (dom.inviteInput) {
+        dom.inviteInput.value = String(rawValue || token).trim() || token;
+    }
+
+    window.history.replaceState({}, '', inviteUrl.toString());
+    await loadInviteStatus();
+
+    if (state.inviteInfo) {
+        setAuthHint('Приглашение добавлено. Теперь можно войти.');
+        if (focusUsername) {
+            dom.usernameInput.focus();
+        }
+        return true;
+    }
+
+    return false;
+}
+
+async function handleApplyInvite() {
+    await applyInviteFromValue(dom.inviteInput ? dom.inviteInput.value : '');
+}
+
+async function handlePasteInvite() {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+        setAuthHint('Вставьте invite-ссылку вручную в поле выше.', true);
+        return;
+    }
+
+    try {
+        const raw = await navigator.clipboard.readText();
+        if (dom.inviteInput) {
+            dom.inviteInput.value = raw;
+        }
+        await applyInviteFromValue(raw);
+    } catch {
+        setAuthHint('Не удалось прочитать буфер обмена. Вставьте invite вручную.', true);
+    }
+}
+
 function getPushDeviceToken() {
     const existing = localStorage.getItem(PUSH_DEVICE_TOKEN_KEY);
     if (existing && /^[a-f0-9]{64}$/i.test(existing)) {
@@ -294,6 +437,7 @@ function updateNotificationUI() {
 }
 
 function updateInviteState() {
+    updateInviteControls();
     const hasValidInvite = Boolean(state.inviteInfo && !state.inviteError);
     const claimedUsername = state.inviteInfo && state.inviteInfo.assigned_username ? state.inviteInfo.assigned_username : '';
 
@@ -1063,6 +1207,13 @@ async function loginUser(event) {
         return;
     }
 
+    if (!state.inviteInfo && dom.inviteInput && dom.inviteInput.value.trim()) {
+        const applied = await applyInviteFromValue(dom.inviteInput.value.trim(), false);
+        if (!applied && !state.inviteInfo) {
+            return;
+        }
+    }
+
     if (!state.inviteInfo) {
         setAuthHint(UI.needInviteHint, true);
         return;
@@ -1531,21 +1682,26 @@ function toggleCamera() {
 }
 
 function hydrateInviteToken() {
+    const configToken = normalizeInviteToken(config.initialInviteToken || '');
     const urlToken = normalizeInviteToken(new URLSearchParams(window.location.search).get('invite'));
     const storedToken = normalizeInviteToken(localStorage.getItem(INVITE_STORAGE_KEY));
-
-    if (urlToken) {
-        adoptInviteToken(urlToken);
+    const activeToken = configToken || urlToken;
+    if (activeToken) {
+        adoptInviteToken(activeToken);
+        if (dom.inviteInput && !dom.inviteInput.value.trim()) {
+            dom.inviteInput.value = activeToken;
+        }
         return;
     }
-
     if (state.usernamePath) {
         state.inviteToken = null;
         return;
     }
-
     if (storedToken) {
         state.inviteToken = storedToken;
+        if (dom.inviteInput && !dom.inviteInput.value.trim()) {
+            dom.inviteInput.value = storedToken;
+        }
     }
 }
 
@@ -1561,6 +1717,20 @@ async function initialize() {
     render();
 }
 
+if (dom.applyInviteButton) {
+    dom.applyInviteButton.addEventListener('click', handleApplyInvite);
+}
+if (dom.pasteInviteButton) {
+    dom.pasteInviteButton.addEventListener('click', handlePasteInvite);
+}
+if (dom.inviteInput) {
+    dom.inviteInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleApplyInvite();
+        }
+    });
+}
 dom.loginForm.addEventListener('submit', loginUser);
 dom.messageForm.addEventListener('submit', handleSendMessage);
 dom.audioCallButton.addEventListener('click', () => startCall('audio'));

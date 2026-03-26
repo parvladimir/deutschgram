@@ -4,4 +4,5 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+RewriteRule ^join/([A-Fa-f0-9]{32,})/?$ index.php?invite_path=$1 [L,QSA]
 RewriteRule ^([A-Za-z0-9._-]+)/?$ index.php?username_path=$1 [L,QSA]

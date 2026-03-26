@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 $usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] : '';
+$scriptDirectory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+$scriptDirectory = $scriptDirectory === '/' ? '' : rtrim($scriptDirectory, '/');
+$appRootPath = ($scriptDirectory === '' ? '/' : ($scriptDirectory . '/'));
+$inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET['invite_path']) ? (string) $_GET['invite_path'] : '');
 ?><!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -25,7 +29,7 @@ $usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] 
     <div class="app-shell">
         <aside class="sidebar">
             <div class="brand-card">
-                <p class="eyebrow">семейная линия связи</p>
+                <p class="eyebrow">СЕМЕЙНАЯ ЛИНИЯ СВЯЗИ</p>
                 <h1>Deutschgram Call</h1>
                 <p class="brand-copy">Вход пока только по приглашениям. После первого входа человек сможет заходить уже по своей личной ссылке.</p>
                 <p class="brand-credit">Разработчик: Volodymyr Parashchak</p>
@@ -34,13 +38,25 @@ $usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] 
             <form id="loginForm" class="panel auth-panel" autocomplete="off">
                 <div class="panel-heading compact-heading">
                     <h2>Вход</h2>
-                    <p>Сначала откройте invite-ссылку. Потом будет доступна и личная ссылка вида <code>/mama</code>.</p>
+                    <p>Можно открыть invite-ссылку напрямую, а можно вставить её сюда целиком или просто вставить код приглашения.</p>
                 </div>
 
                 <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидание приглашения</div>
-                <p id="inviteStatusText" class="helper-text">Откройте сайт по invite-ссылке, чтобы войти.</p>
+                <p id="inviteStatusText" class="helper-text">Откройте сайт по invite-ссылке или вставьте её ниже, чтобы войти.</p>
                 <p id="routeHint" class="helper-text hidden"></p>
                 <p id="inviteNote" class="invite-note hidden"></p>
+
+                <label class="field">
+                    <span>Invite-ссылка или код</span>
+                    <input type="text" id="inviteInput" maxlength="500" placeholder="Вставьте полную ссылку или код приглашения">
+                </label>
+
+                <div class="inline-actions auth-actions">
+                    <button type="button" id="pasteInviteButton" class="secondary-button">Вставить</button>
+                    <button type="button" id="applyInviteButton" class="secondary-button">Применить invite</button>
+                </div>
+
+                <p class="helper-text">На Android можно открыть invite-ссылку через «Открыть в приложении» или поделиться ссылкой в Deutschgram.</p>
 
                 <label class="field">
                     <span>Имя пользователя</span>
@@ -48,7 +64,7 @@ $usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] 
                 </label>
 
                 <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>Открыть мессенджер</button>
-                <p id="authHint" class="helper-text">Сначала откройте рабочую invite-ссылку.</p>
+                <p id="authHint" class="helper-text">Сначала откройте рабочую invite-ссылку или вставьте её в поле выше.</p>
             </form>
 
             <section class="panel notification-panel">
@@ -154,6 +170,8 @@ $usernamePath = isset($_GET['username_path']) ? (string) $_GET['username_path'] 
         window.DEUTSCHGRAM_CONFIG = <?php echo json_encode([
             'usernamePath' => $usernamePath,
             'serviceWorker' => 'service-worker.js',
+            'appRootPath' => $appRootPath,
+            'initialInviteToken' => $inviteToken,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
     </script>
     <script src="assets/app.js" defer></script>

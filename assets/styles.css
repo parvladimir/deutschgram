@@ -287,6 +287,10 @@ textarea {
     flex-wrap: wrap;
 }
 
+.auth-actions > * {
+    flex: 1 1 0;
+}
+
 .admin-panel,
 .admin-workspace,
 .admin-create-form {

@@ -42,7 +42,7 @@ function sanitizeDisplayName(string $displayName): string
 function buildInviteLink(string $token, ?string $baseUrl = null): string
 {
     $base = rtrim($baseUrl ?: appBaseUrl(), '/');
-    return $base . '/?invite=' . rawurlencode($token);
+    return $base . '/join/' . rawurlencode($token);
 }
 
 function buildUserPathLink(string $username, ?string $baseUrl = null): string
