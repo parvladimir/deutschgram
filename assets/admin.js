@@ -87,6 +87,21 @@ async function copyText(value) {
     }
 }
 
+function renderLink(container, url, fallbackText = '') {
+    container.innerHTML = '';
+
+    if (!url) {
+        container.textContent = fallbackText;
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.textContent = url;
+    link.className = 'invite-link-anchor';
+    container.appendChild(link);
+}
+
 function renderInvites() {
     if (!state.adminKey) {
         dom.adminInvitesList.className = 'stack-list empty-list';
@@ -129,8 +144,8 @@ function renderInvites() {
         metaParts.push(invite.last_used_at ? `${UI.lastUsedPrefix}${formatDateTime(invite.last_used_at)}` : UI.neverUsed);
         meta.textContent = metaParts.join(' · ');
 
-        inviteLink.textContent = invite.link;
-        personalLink.textContent = invite.path_link || UI.personalPending;
+        renderLink(inviteLink, invite.link);
+        renderLink(personalLink, invite.path_link, UI.personalPending);
 
         if (invite.revoked_at) {
             status.textContent = UI.revoked;

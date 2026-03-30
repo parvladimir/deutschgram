@@ -761,3 +761,14 @@ video {
         grid-column: auto;
     }
 }
+
+.invite-link-anchor {
+    color: inherit;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.invite-link-anchor:hover,
+.invite-link-anchor:focus {
+    text-decoration: underline;
+}

@@ -227,6 +227,14 @@ function buildInviteUrl(token) {
     return new URL('join/' + encodeURIComponent(normalizeInviteToken(token)), appRootUrl());
 }
 
+function buildAdminUrl() {
+    return new URL('admin/', appRootUrl());
+}
+
+function buildUserUrl(username) {
+    return new URL(encodeURIComponent(normalizePathUsername(username)), appRootUrl());
+}
+
 function extractInviteToken(value) {
     const raw = String(value || '').trim();
     if (!raw) {
@@ -275,6 +283,49 @@ function extractInviteToken(value) {
     return rawTokenMatch ? normalizeInviteToken(rawTokenMatch[1]) : '';
 }
 
+function extractOpenUrl(value) {
+    const raw = String(value || '').trim();
+    if (!raw) {
+        return '';
+    }
+
+    const simplePath = raw.replace(/^\/+|\/+$/g, '');
+    if (simplePath.toLowerCase() === 'admin') {
+        return buildAdminUrl().toString();
+    }
+
+    if (raw.startsWith('/')) {
+        const username = normalizePathUsername(simplePath);
+        if (username && username !== 'join' && username !== 'admin') {
+            return buildUserUrl(username).toString();
+        }
+        return '';
+    }
+
+    try {
+        const url = new URL(raw);
+        const segments = String(url.pathname || '').split('/').filter(Boolean);
+        if (segments.length === 0) {
+            return '';
+        }
+
+        const lastSegment = String(segments[segments.length - 1] || '').trim();
+        if (lastSegment.toLowerCase() === 'admin') {
+            return url.toString();
+        }
+
+        if (!url.searchParams.has('invite') && (segments.length === 1 || segments[segments.length - 2].toLowerCase() !== 'join')) {
+            const username = normalizePathUsername(lastSegment);
+            if (username && username !== 'join' && username !== 'admin') {
+                return url.toString();
+            }
+        }
+    } catch {
+    }
+
+    return '';
+}
+
 function updateInviteControls() {
     if (!dom.inviteInput) {
         return;
@@ -299,9 +350,15 @@ function updateInviteControls() {
 }
 
 async function applyInviteFromValue(rawValue, focusUsername = true) {
+    const directUrl = extractOpenUrl(rawValue);
+    if (directUrl) {
+        window.location.href = directUrl;
+        return true;
+    }
+
     const token = extractInviteToken(rawValue);
     if (!token) {
-        setAuthHint('Вставьте полную invite-ссылку или код приглашения.', true);
+        setAuthHint('Вставьте invite-ссылку, личную ссылку или /admin.', true);
         return false;
     }
 
@@ -340,7 +397,7 @@ async function handleApplyInvite() {
 
 async function handlePasteInvite() {
     if (!navigator.clipboard || !navigator.clipboard.readText) {
-        setAuthHint('Вставьте invite-ссылку вручную в поле выше.', true);
+        setAuthHint('Вставьте ссылку вручную в поле выше.', true);
         return;
     }
 
@@ -351,7 +408,7 @@ async function handlePasteInvite() {
         }
         await applyInviteFromValue(raw);
     } catch {
-        setAuthHint('Не удалось прочитать буфер обмена. Вставьте invite вручную.', true);
+        setAuthHint('Не удалось прочитать буфер обмена. Вставьте ссылку вручную.', true);
     }
 }
 

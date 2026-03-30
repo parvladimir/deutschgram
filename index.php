@@ -38,25 +38,25 @@ $inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET[
             <form id="loginForm" class="panel auth-panel" autocomplete="off">
                 <div class="panel-heading compact-heading">
                     <h2>Вход</h2>
-                    <p>Можно открыть invite-ссылку напрямую, а можно вставить её сюда целиком или просто вставить код приглашения.</p>
+                    <p>Можно вставить сюда invite-ссылку, личную ссылку вида /mama или адрес /admin, и приложение откроет нужный экран.</p>
                 </div>
 
                 <div id="inviteBadge" class="invite-badge invite-badge-pending">Ожидание приглашения</div>
-                <p id="inviteStatusText" class="helper-text">Откройте сайт по invite-ссылке или вставьте её ниже, чтобы войти.</p>
+                <p id="inviteStatusText" class="helper-text">Откройте invite-ссылку или вставьте сюда invite, личную ссылку либо /admin.</p>
                 <p id="routeHint" class="helper-text hidden"></p>
                 <p id="inviteNote" class="invite-note hidden"></p>
 
                 <label class="field">
-                    <span>Invite-ссылка или код</span>
+                    <span>Ссылка или код</span>
                     <input type="text" id="inviteInput" maxlength="500" placeholder="Вставьте полную ссылку или код приглашения">
                 </label>
 
                 <div class="inline-actions auth-actions">
                     <button type="button" id="pasteInviteButton" class="secondary-button">Вставить</button>
-                    <button type="button" id="applyInviteButton" class="secondary-button">Применить invite</button>
+                    <button type="button" id="applyInviteButton" class="secondary-button">Открыть ссылку</button>
                 </div>
 
-                <p class="helper-text">На Android можно открыть invite-ссылку через «Открыть в приложении» или поделиться ссылкой в Deutschgram.</p>
+                <p class="helper-text">На Android можно вставить сюда invite, личную ссылку или /admin. Полные ссылки из домена тоже поддерживаются.</p>
 
                 <label class="field">
                     <span>Имя пользователя</span>
@@ -64,7 +64,7 @@ $inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET[
                 </label>
 
                 <button type="submit" id="openMessengerButton" class="primary-button wide-button" disabled>Открыть мессенджер</button>
-                <p id="authHint" class="helper-text">Сначала откройте рабочую invite-ссылку или вставьте её в поле выше.</p>
+                <p id="authHint" class="helper-text">Вставьте invite, личную ссылку или /admin в поле выше.</p>
             </form>
 
             <section class="panel notification-panel">
