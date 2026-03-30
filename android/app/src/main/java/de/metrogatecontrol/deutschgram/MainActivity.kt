@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                 allowFileAccess = false
                 allowContentAccess = false
                 loadsImagesAutomatically = true
-                cacheMode = WebSettings.LOAD_DEFAULT
+                cacheMode = WebSettings.LOAD_NO_CACHE
                 mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
             }
 
@@ -201,6 +201,11 @@ class MainActivity : AppCompatActivity() {
         return base + "/" + username
     }
 
+    private fun buildAdminUrl(): String {
+        val base = BuildConfig.DEUTSCHGRAM_BASE_URL.removeSuffix("/")
+        return base + "/admin/"
+    }
+
     private fun extractInviteToken(rawValue: String?): String? {
         val raw = rawValue?.trim().orEmpty()
         if (raw.isBlank()) {
@@ -245,6 +250,10 @@ class MainActivity : AppCompatActivity() {
             val segments = uri.pathSegments.orEmpty().filter { it.isNotBlank() }
             if (segments.isEmpty()) {
                 return BuildConfig.DEUTSCHGRAM_BASE_URL
+            }
+
+            if (segments.size == 1 && segments.first().equals("admin", ignoreCase = true)) {
+                return buildAdminUrl()
             }
 
             if (segments.first().equals("join", ignoreCase = true) && segments.size >= 2) {

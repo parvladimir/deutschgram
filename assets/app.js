@@ -75,7 +75,7 @@ const USER_STORAGE_KEY = 'deutschgram-user-id';
 const USERNAME_STORAGE_KEY = 'deutschgram-username';
 const INVITE_STORAGE_KEY = 'deutschgram-invite-token';
 const PUSH_DEVICE_TOKEN_KEY = 'deutschgram-push-device-token';
-const SIGNAL_API = 'api/index.php';
+const SIGNAL_API = config.apiBase || 'api/index.php';
 const SYNC_VISIBLE_MS = 5000;
 const SYNC_HIDDEN_MS = 15000;
 

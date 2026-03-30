@@ -7,6 +7,23 @@ $scriptDirectory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'
 $scriptDirectory = $scriptDirectory === '/' ? '' : rtrim($scriptDirectory, '/');
 $appRootPath = ($scriptDirectory === '' ? '/' : ($scriptDirectory . '/'));
 $inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET['invite_path']) ? (string) $_GET['invite_path'] : '');
+$manifestPath = $appRootPath . 'manifest.webmanifest';
+$iconPath = $appRootPath . 'assets/icon.svg';
+$stylesPath = $appRootPath . 'assets/styles.css';
+$scriptPath = $appRootPath . 'assets/app.js';
+$serviceWorkerPath = $appRootPath . 'service-worker.js';
+$apiBasePath = $appRootPath . 'api/index.php';
+$assetVersion = (string) max(
+    (int) (@filemtime(__DIR__ . '/assets/app.js') ?: 0),
+    (int) (@filemtime(__DIR__ . '/assets/styles.css') ?: 0),
+    (int) (@filemtime(__DIR__ . '/service-worker.js') ?: 0),
+    (int) (@filemtime(__DIR__ . '/manifest.webmanifest') ?: 0)
+);
+$manifestPathVersioned = $manifestPath . '?v=' . rawurlencode($assetVersion);
+$iconPathVersioned = $iconPath . '?v=' . rawurlencode($assetVersion);
+$stylesPathVersioned = $stylesPath . '?v=' . rawurlencode($assetVersion);
+$scriptPathVersioned = $scriptPath . '?v=' . rawurlencode($assetVersion);
+$serviceWorkerPathVersioned = $serviceWorkerPath . '?v=' . rawurlencode($assetVersion);
 ?><!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -18,9 +35,9 @@ $inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET[
     <meta name="apple-mobile-web-app-title" content="Deutschgram">
     <meta name="description" content="Лёгкий семейный веб-мессенджер для сообщений, голосовых и видеозвонков.">
     <title>Deutschgram Call • Volodymyr Parashchak</title>
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="manifest" href="<?php echo htmlspecialchars($manifestPathVersioned, ENT_QUOTES, 'UTF-8'); ?>">
+    <link rel="icon" href="<?php echo htmlspecialchars($iconPathVersioned, ENT_QUOTES, 'UTF-8'); ?>" type="image/svg+xml">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars($stylesPathVersioned, ENT_QUOTES, 'UTF-8'); ?>">
 </head>
 <body>
     <div class="background-orbit orbit-a"></div>
@@ -169,11 +186,12 @@ $inviteToken = isset($_GET['invite']) ? (string) $_GET['invite'] : (isset($_GET[
     <script>
         window.DEUTSCHGRAM_CONFIG = <?php echo json_encode([
             'usernamePath' => $usernamePath,
-            'serviceWorker' => 'service-worker.js',
+            'serviceWorker' => $serviceWorkerPathVersioned,
             'appRootPath' => $appRootPath,
             'initialInviteToken' => $inviteToken,
+            'apiBase' => $apiBasePath,
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
     </script>
-    <script src="assets/app.js" defer></script>
+    <script src="<?php echo htmlspecialchars($scriptPathVersioned, ENT_QUOTES, 'UTF-8'); ?>" defer></script>
 </body>
 </html>

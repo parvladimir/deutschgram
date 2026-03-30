@@ -11,9 +11,9 @@ declare(strict_types=1);
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Deutschgram Admin">
     <title>Deutschgram Admin • Volodymyr Parashchak</title>
-    <link rel="manifest" href="../manifest.webmanifest">
-    <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="manifest" href="../manifest.webmanifest?v=<?php echo rawurlencode($assetVersion); ?>">
+    <link rel="icon" href="../assets/icon.svg?v=<?php echo rawurlencode($assetVersion); ?>" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/styles.css?v=<?php echo rawurlencode($assetVersion); ?>">
 </head>
 <body class="admin-page">
     <div class="background-orbit orbit-a"></div>
@@ -116,6 +116,6 @@ declare(strict_types=1);
             apiBase: '../api/index.php'
         };
     </script>
-    <script src="../assets/admin.js" defer></script>
+    <script src="../assets/admin.js?v=<?php echo rawurlencode($assetVersion); ?>" defer></script>
 </body>
 </html>
